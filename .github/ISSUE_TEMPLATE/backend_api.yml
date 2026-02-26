@@ -1,0 +1,195 @@
+name: "BE - API/Regra de Negócio"
+description: "Issue de back-end para endpoints, regras de negócio e integrações do Ajeita"
+title: "[BE][EPIC] <Método> <Rota> - <descrição curta>"
+labels: ["BE"]
+body:
+  - type: dropdown
+    id: epic
+    attributes:
+      label: Epic / Domínio
+      description: "Selecione o contexto principal desta issue."
+      options:
+        - AUTH (autenticação e usuários)
+        - PROVIDER (prestador de serviços)
+        - CLIENT (cliente)
+        - BUDGET (orçamentos)
+        - SCHEDULING (agendamentos e disponibilidade)
+        - PAYMENTS (pagamentos)
+        - SERVICE (execução do serviço)
+        - SUPPORT (suporte/tickets)
+        - ADMIN (administração)
+        - INFRA (infraestrutura, logging, etc.)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Prioridade
+      options:
+        - P0 (bloqueante / MVP)
+        - P1 (importante)
+        - P2 (melhoria / nice to have)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Tipo de issue
+      options:
+        - feature (nova funcionalidade)
+        - task (tarefa técnica/refino)
+        - bug (correção de bug)
+    validations:
+      required: true
+
+  - type: input
+    id: endpoint
+    attributes:
+      label: Endpoint / Recurso
+      description: "Informe o método e a rota principal (se aplicável)."
+      placeholder: "Ex: POST /auth/login, GET /clients/{id}/budgets"
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto e objetivo
+      description: "Explique em poucas linhas o PORQUÊ desta issue (ligar com jornada/tela ou necessidade de negócio)."
+      placeholder: |
+        Ex:
+        Permitir que o cliente faça login utilizando e-mail e senha,
+        retornando um token de autenticação para uso no front-end.
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Escopo funcional (o que deve fazer)
+      description: "Liste o comportamento esperado e principais regras de negócio, sem falar de implementação interna."
+      placeholder: |
+        Exemplos:
+        - Autenticar usuário por e-mail/senha.
+        - Verificar se usuário está ativo (não bloqueado).
+        - Retornar token e dados básicos do usuário.
+    validations:
+      required: true
+
+  - type: textarea
+    id: api_contract
+    attributes:
+      label: Contrato da API (request/response)
+      description: "Defina o contrato esperado: método, rota, body, query params, responses (200/4xx/5xx), exemplos em JSON."
+      placeholder: |
+        Método: POST
+        Rota: /auth/login
+
+        Body:
+        {
+          "email": "user@example.com",
+          "password": "string"
+        }
+
+        200 OK:
+        {
+          "user": { "id": "uuid", "role": "client|provider|admin", "name": "string" },
+          "token": "jwt-string",
+          "expiresIn": 3600
+        }
+
+        401 Unauthorized:
+        { "message": "Credenciais inválidas" }
+    validations:
+      required: false
+
+  - type: textarea
+    id: validation_rules
+    attributes:
+      label: Regras de validação e erros
+      description: "Defina validações de campos, códigos de erro e mensagens esperadas."
+      placeholder: |
+        Exemplos:
+        - email obrigatório, formato válido.
+        - password obrigatória.
+        - 401 se e-mail não existir ou senha estiver incorreta.
+        - 403 se usuário estiver bloqueado.
+    validations:
+      required: false
+
+  - type: textarea
+    id: domain_rules
+    attributes:
+      label: Regras de negócio adicionais
+      description: "Descreva regras de negócio específicas deste fluxo (status, transições, permissões, etc.)."
+      placeholder: |
+        Exemplos:
+        - Apenas prestadores com cadastro aprovado podem enviar orçamentos.
+        - Um orçamento recém-criado deve iniciar com status PENDING_CLIENT_DECISION.
+        - Cliente só pode avaliar prestador após o serviço estar como FINALIZADO.
+    validations:
+      required: false
+
+  - type: textarea
+    id: persistence
+    attributes:
+      label: Persistência e entidades envolvidas
+      description: "Indique quais tabelas/models são lidos/atualizados e se há eventos/disparos (notificações, filas, etc.)."
+      placeholder: |
+        Exemplos:
+        - Ler tabela users.
+        - Atualizar login_logs com timestamp e resultado.
+        - Inserir novo registro em budgets vinculado à request.
+        - (Opcional) disparar evento para notificar cliente.
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Critérios de aceitação (checklist)
+      description: "Checklist objetivo que permite saber se a issue está pronta. Deve ser testável via API (Insomnia/Postman)."
+      value: |
+        - [ ] Endpoint responde com 2xx em cenários válidos.
+        - [ ] Retorna códigos 4xx adequados em cenários inválidos.
+        - [ ] Respeita o contrato de request/response definido.
+        - [ ] Regras de negócio configuradas e validadas.
+        - [ ] Testado manualmente via cliente HTTP (ex: Insomnia/Postman).
+    validations:
+      required: true
+
+  - type: textarea
+    id: security
+    attributes:
+      label: Segurança e autenticação
+      description: "Quem pode acessar? Quais roles? Precisa de autenticação/token? Há dados sensíveis?"
+      placeholder: |
+        Exemplos:
+        - Rota protegida, requer token JWT válido.
+        - Papel permitido: provider.
+        - Não retornar e-mail do cliente em listagens públicas.
+    validations:
+      required: false
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependências
+      description: "Liste issues relacionadas (front/back), migrations necessárias ou ordem de execução."
+      placeholder: |
+        Exemplos:
+        - Depende da issue #12 (criar tabela budgets).
+        - Consumida pela issue de front [FE][CLIENT] Acompanhar Orçamentos.
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Observações adicionais
+      description: "Qualquer detalhe extra útil para quem for implementar ou revisar."
+      placeholder: "Anotações, decisões de design, links de referência, etc."
+    validations:
+      required: false
