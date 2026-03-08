@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  CLIENT
+  PROVIDER
+  ADMIN
+}
+
+enum StatusService {
+  UNDER_ANALYSIS
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+model User {
+  id          String   @id @default(uuid())
+  name        String
+  email       String   @unique
+  password    String
+  cpf         String   @unique
+  age         Int?
+  phone       String?
+  role        Role     @default(CLIENT)
+  avatar_url  String?
+  description String?
+  createdAt   DateTime @default(now())
+
+  adresses Adress[]
+  payments Payment[]
+  rating   Rating[]
+
+  client_services   Service[] @relation("ClientServices")
+  provider_services Service[] @relation("ProviderServices")
+
+  @@map("users")
+}
+
+model Adress {
+  id              String  @id @default(uuid())
+  street          String
+  number          String
+  type            String
+  reference_point String?
+  cep             String
+
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id])
+
+  @@map("adresses")
+}
+
+model Category {
+  id   String  @id @default(uuid())
+  name String  @unique
+  icon String?
+
+  services Service[]
+
+  @@map("categories")
+}
+
+model Service {
+  id          String        @id @default(uuid())
+  title       String
+  description String
+  status      StatusService @default(UNDER_ANALYSIS)
+  start_date  DateTime?
+  end_date    DateTime?
+
+  category_id String
+  category    Category @relation(fields: [category_id], references: [id])
+
+  client_id String
+  client    User   @relation("ClientServices", fields: [client_id], references: [id])
+
+  provider_id String?
+  provider    User?   @relation("ProviderServices", fields: [provider_id], references: [id])
+
+  budget  Budget?
+  ratings Rating[]
+
+  @@map("services")
+}
+
+model Budget {
+  id        String  @id @default(uuid())
+  value     Decimal
+  aprovoval Boolean @default(false)
+
+  service_id String  @unique
+  service    Service @relation(fields: [service_id], references: [id])
+
+  @@map("budgets")
+}
+
+model Rating {
+  id          String  @id @default(uuid())
+  description String?
+  grade       Int
+
+  service_id String
+  service    Service @relation(fields: [service_id], references: [id])
+
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id])
+
+  @@map("rating")
+}
+
+model Payment {
+  id                String  @id @default(uuid())
+  method            String
+  value             Decimal
+  confirmed_payment Boolean @default(false)
+
+  client_id String
+  client    User   @relation(fields: [client_id], references: [id])
+
+  @@map("payments")
+}
