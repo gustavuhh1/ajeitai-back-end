@@ -26,17 +26,19 @@ enum StatusService {
 }
 
 model User {
-  id          String   @id @default(uuid())
-  name        String
-  email       String   @unique
-  password    String
-  cpf         String   @unique
-  age         Int?
-  phone       String?
-  role        Role     @default(CLIENT)
-  avatar_url  String?
-  description String?
-  createdAt   DateTime @default(now())
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  password      String?
+  cpf           String   @unique
+  age           Int?
+  phone         String?
+  role          Role     @default(CLIENT)
+  avatar_url    String?
+  description   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   adresses Adress[]
   payments Payment[]
@@ -45,7 +47,56 @@ model User {
   client_services   Service[] @relation("ClientServices")
   provider_services Service[] @relation("ProviderServices")
 
+  sessions Session[]
+  accounts Account[]
+
   @@map("users")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("accounts")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verifications")
 }
 
 model Adress {
