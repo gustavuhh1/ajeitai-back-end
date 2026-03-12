@@ -1,7 +1,7 @@
 import {Request, Response} from 'express'
 import {CreateUserUseCase} from '@/usecases/CreateUserUseCase'
 import {PrismaUserRepository} from '@/repositories/PrismaUserRepository'
-import {z, ZodError} from 'zod'
+import {z} from 'zod'
 
 const createUserSchema = z.object({
     name: z.string().min(3, { message: "O nome deve ter pelo menos 3 caracteres"}),
@@ -13,27 +13,13 @@ const createUserSchema = z.object({
 
 export class CreateUserController {
     async handle(request: Request, response: Response) {
-        try {
-            const data = createUserSchema.parse(request.body)
+        const data = createUserSchema.parse(request.body)
 
-            const userRepository = new PrismaUserRepository()
-            const createUserUseCase = new CreateUserUseCase(userRepository)
+        const userRepository = new PrismaUserRepository()
+        const createUserUseCase = new CreateUserUseCase(userRepository)
 
-            const user = await createUserUseCase.execute(data)
+        const user = await createUserUseCase.execute(data)
 
-            return response.status(201).json({user})
-        } catch (error: any) {
-             TODO: //personalizar errors e melhorar o erro do zod
-            if (error instanceof ZodError) {
-                return response.status(400).json({
-                    message: "Erro de validação",
-                    issues: error.format()
-                })
-            }
-
-            return response.status(400).json({
-                error: error.message || "Erro inesperado ao criar usuário."
-            })
-        }
+        return response.status(201).json({user})
     }
 }
