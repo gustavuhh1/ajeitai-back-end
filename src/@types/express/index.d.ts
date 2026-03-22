@@ -7,7 +7,7 @@ declare global {
                 id: string,
                 email: string,
                 name: string,
-                cpf?: string
+                cpf?: string,
                 role?: string
             }
         }
