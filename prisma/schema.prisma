@@ -23,6 +23,7 @@ enum StatusService {
   PENDING
   IN_PROGRESS
   COMPLETED
+  CANCELED
 }
 
 model User {
