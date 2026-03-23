@@ -4,7 +4,7 @@ export interface UserProps {
     id?: string
     name: string
     email: string
-    password: string
+    password?: string | null
     cpf: string
     role?: 'CLIENT' | 'PROVIDER' | 'ADMIN'
     created_at?: Date

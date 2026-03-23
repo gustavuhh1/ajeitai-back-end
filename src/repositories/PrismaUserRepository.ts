@@ -1,6 +1,7 @@
 import {prisma} from '@/utils/prisma'
 import {User} from "@/entities/User"
 import {IUserRepository} from "@/usecases/CreateUserUseCase"
+import { auth } from '@/auth/auth'
 
 export class PrismaUserRepository implements IUserRepository {
 
@@ -26,14 +27,13 @@ export class PrismaUserRepository implements IUserRepository {
     }
 
     async save(user: User): Promise<void> {
-        await prisma.user.create({
-            data: {
-                id: user.id,
+        await auth.api.signUpEmail({
+            body: {
                 name: user.name,
                 email: user.email,
                 password: user.password,
                 cpf: user.cpf,
-                role: user.role 
+                role: user.role
             }
         })
     }
