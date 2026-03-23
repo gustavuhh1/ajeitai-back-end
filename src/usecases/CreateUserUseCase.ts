@@ -16,12 +16,7 @@ export class CreateUserUseCase {
             throw new Error("User already exists.")
         }
 
-        const hashedPassword = await bcrypt.hash(data.password, 8)
-
-        const user = new User({
-            ...data,
-            password: hashedPassword
-        })
+        const user = new User(data)
 
         await this.userRepository.save(user)
         return user

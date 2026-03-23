@@ -21,6 +21,8 @@ import {InMemoryUserRepository} from '@/repositories/in-memory-user-repository'
             cpf: "12345678910"
         })
 
+        console.log('Usuario:' , user)
+
         expect(user.id).toStrictEqual(expect.any(String))
         expect(userRepository.items).toHaveLength(1)
         expect(userRepository.items[0]?.name).toBe('testando')
