@@ -1,7 +1,7 @@
 import {Request, Response} from 'express'
 import {CreateUserUseCase} from '@/usecases/CreateUserUseCase'
 import {PrismaUserRepository} from '@/repositories/PrismaUserRepository'
-import {z, ZodError} from 'zod'
+import {z} from 'zod'
 
 const createUserSchema = z.object({
     name: z.string().min(3, { message: "O nome deve ter pelo menos 3 caracteres"}),
@@ -13,8 +13,7 @@ const createUserSchema = z.object({
 
 export class CreateUserController {
     async handle(request: Request, response: Response) {
-        try {
-            const data = createUserSchema.parse(request.body)
+        const data = createUserSchema.parse(request.body)
 
             const userRepository = new PrismaUserRepository()
             const createUserUsecase = new CreateUserUseCase(userRepository)
