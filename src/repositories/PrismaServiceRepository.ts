@@ -12,7 +12,10 @@ export class PrismaServiceRepository implements IServiceRepository {
                 category_id: service.category_id,
                 client_id: service.client_id,
                 status: service.status,
-                city: service.city
+                city: service.city,
+                latitude: service.latitude,
+                longitude: service.longitude,
+                neighborhood: service.neighborhood          
             }
         })
     }

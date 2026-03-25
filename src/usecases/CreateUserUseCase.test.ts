@@ -1,6 +1,6 @@
 import {expect, it, describe, beforeEach} from 'vitest'
 import {CreateUserUseCase} from "@/usecases/CreateUserUseCase"
-import {InMemoryUserRepository} from '@/repositories/in-memory-user-repository'
+import {InMemoryUserRepository} from '@/repositories/in-memory/in-memory-user-repository'
 
  //TODO: Criar um repositório em memória para simular o banco de dados.  
 
