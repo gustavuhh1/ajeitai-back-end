@@ -23,6 +23,7 @@ enum StatusService {
   PENDING
   IN_PROGRESS
   COMPLETED
+  CANCELED
 }
 
 model User {
@@ -130,6 +131,11 @@ model Service {
   status      StatusService @default(UNDER_ANALYSIS)
   start_date  DateTime?
   end_date    DateTime?
+
+  latitude Float?
+  longitude Float?
+  city String
+  neighborhood String?
 
   category_id String
   category    Category @relation(fields: [category_id], references: [id])
