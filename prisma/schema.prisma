@@ -132,6 +132,11 @@ model Service {
   start_date  DateTime?
   end_date    DateTime?
 
+  latitude Float?
+  longitude Float?
+  city String
+  neighborhood String?
+
   category_id String
   category    Category @relation(fields: [category_id], references: [id])
 
