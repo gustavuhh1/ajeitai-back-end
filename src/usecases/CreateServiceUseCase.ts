@@ -7,6 +7,10 @@ interface CreateServiceRequest {
     description: string
     category_id: string
     client_id: string
+    city: string
+    neighborhood?: string
+    latitude?: number | null
+    longitude?: number | null
 }
 
 export class CreateServiceUseCase {
@@ -16,7 +20,7 @@ export class CreateServiceUseCase {
     ) {}
 
     async execute(request: CreateServiceRequest) {
-        const {title, description, category_id, client_id} = request
+       const {category_id} = request
 
         const category = await this.categoryRepository.findById(category_id)
         if(!category) {
@@ -24,10 +28,7 @@ export class CreateServiceUseCase {
         }
 
         const service = new Service({
-            title,
-            description, 
-            category_id,
-            client_id,
+            ...request,
             status: 'UNDER_ANALYSIS'
         })
 
