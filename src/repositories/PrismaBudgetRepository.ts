@@ -1,8 +1,7 @@
 import { prisma } from '@/utils/prisma'
 import { Budget } from '@/entities/Budget'
-import { IBudgetRepository } from './IBudgetRepository'
-import { Budget as PrismaBudget } from '@prisma/client'
-import {Decimal} from "@prisma/client/runtime/client";
+import { IBudgetRepository, BudgetWithProvider } from './IBudgetRepository'
+
 
 export class PrismaBudgetRepository implements IBudgetRepository {
     async create(budget: Budget) {
@@ -19,21 +18,33 @@ export class PrismaBudgetRepository implements IBudgetRepository {
         })
     }
 
-    async findByServiceId(serviceId: string) {
-        const data = await prisma.budget.findMany({
-            where: { serviceId: serviceId }
-        })
+    async findManyByServiceIdWithProvider(serviceId: string): Promise<BudgetWithProvider[]> {
+        const budgets = await prisma.budget.findMany({
+            where: { serviceId },
+            include: {
+                provider: {
+                    select: {
+                        id: true,
+                        name: true,
+                        description: true,
+                    }
+                }
+            }
+        });
 
-        return data.map((item: PrismaBudget) => new Budget({
+        return budgets.map(item => ({
             id: item.id,
-            serviceId: item.serviceId,
-            providerId: item.providerId,
             price: Number(item.price),
             description: item.description,
             estimatedDate: item.estimatedDate,
-            status: item.status as any,
+            status: item.status,
             createdAt: item.createdAt,
-            updatedAt: item.updatedAt
-        }))
+            provider: {
+                id: item.provider.id,
+                name: item.provider.name,
+                description: item.provider.description
+            }
+        }));
     }
+
 }
