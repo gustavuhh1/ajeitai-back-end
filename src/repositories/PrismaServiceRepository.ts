@@ -1,6 +1,6 @@
 import {prisma} from '@/utils/prisma'
 import { Service } from '@/entities/Service'
-import { IServiceRepository, ListServicesFilters, ListServicesResponse } from './IServiceRepository'
+import { IServiceRepository, ListServicesFilters, ListServicesResponse, ServiceWithDetails } from './IServiceRepository'
 
 export class PrismaServiceRepository implements IServiceRepository {
     async create(service: Service) {
@@ -78,5 +78,42 @@ export class PrismaServiceRepository implements IServiceRepository {
         }))
 
         return { items, total}
+    }
+
+    async findByIdWithDetails(id: string): Promise<ServiceWithDetails | null> {
+        const serviceData = await prisma.service.findUnique({
+            where: {id},
+            include: {
+                client: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar_url: true
+                    }
+                },
+                budget: true,
+                }
+            })
+
+        if(!serviceData) return null
+
+        const service = new Service({
+            id: serviceData.id,
+            title: serviceData.title,
+            description: serviceData.description,
+            category_id: serviceData.category_id,
+            client_id: serviceData.client_id,
+            provider_id: serviceData.provider_id,
+            status: serviceData.status as any,
+            city: serviceData.city,
+            latitude: serviceData.latitude,
+            longitude: serviceData.longitude,
+            neighborhood: serviceData.neighborhood
+    })
+
+        return {
+            ...service,
+            budgetCount: serviceData.budget ? 1 : 0
+        } as ServiceWithDetails
     }
 }
