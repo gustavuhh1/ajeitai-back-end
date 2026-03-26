@@ -3,8 +3,11 @@ import { IBudgetRepository } from "@/repositories/IBudgetRepository";
 import { IServiceRepository } from "@/repositories/IServiceRepository";
 
 interface CreateBudgetRequest {
-    value: number
-    service_id: string
+    serviceId: string
+    providerId: string
+    price: number
+    description: string
+    estimatedDate: Date
 }
 
 export class CreateBudgetUseCase {
@@ -13,18 +16,13 @@ export class CreateBudgetUseCase {
         private serviceRepository: IServiceRepository
     ) {}
 
-    async execute({ value, service_id }: CreateBudgetRequest) {
-        const service = await this.serviceRepository.findById(service_id)
+    async execute(request: CreateBudgetRequest) {
+        const service = await this.serviceRepository.findById(request.serviceId)
         if (!service) {
             throw new Error("Serviço não encontrado")
         }
 
-        const budgetAlreadyExists = await this.budgetRepository.findByServiceId(service_id)
-        if (budgetAlreadyExists) {
-            throw new Error("Este serviço já possui um orçamento cadastrado")
-        }
-
-        const budget = new Budget({ value, service_id })
+        const budget = new Budget(request)
 
         await this.budgetRepository.create(budget)
 

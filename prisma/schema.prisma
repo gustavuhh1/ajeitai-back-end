@@ -39,6 +39,12 @@ enum PaymentsStatus {
   FAILED
 }
 
+enum BudgetStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
 model User {
   id            String   @id @default(uuid())
   name          String
@@ -65,6 +71,7 @@ model User {
 
   client_bookings   Booking[] @relation("ClientBookings")
   provider_bookings Booking[] @relation("ProviderBookings")
+  budgets           Budget[]
 
   @@map("users")
 }
@@ -160,7 +167,7 @@ model Service {
   provider_id String?
   provider    User?   @relation("ProviderServices", fields: [provider_id], references: [id])
 
-  budget   Budget?
+  budgets  Budget[]
   ratings  Rating[]
   bookings Booking[]
 
@@ -192,19 +199,6 @@ model Booking {
   @@map("bookings")
 }
 
-model Budget {
-  id       String  @id @default(uuid())
-  value    Decimal @db.Decimal(10, 2)
-  approval Boolean @default(false)
-
-  service_id String  @unique
-  service    Service @relation(fields: [service_id], references: [id])
-
-  booking Booking?
-
-  @@map("budgets")
-}
-
 model Rating {
   id          String  @id @default(uuid())
   description String?
@@ -217,6 +211,26 @@ model Rating {
   user    User   @relation(fields: [user_id], references: [id])
 
   @@map("rating")
+}
+
+model Budget {
+  id            String       @id @default(uuid())
+  price         Decimal      @db.Decimal(10, 2)
+  description   String
+  estimatedDate DateTime
+  status        BudgetStatus @default(PENDING)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+
+  providerId String
+  provider   User   @relation(fields: [providerId], references: [id])
+
+  booking Booking?
+
+  @@map("budgets")
 }
 
 model Payment {
