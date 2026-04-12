@@ -14,7 +14,7 @@ const createUserSchema = z.object({
 export class CreateUserController {
     async handle(request: Request, response: Response) {
         try {
-            const data = createUserSchema.parse(request.body)
+        const data = createUserSchema.parse(request.body)
 
             const userRepository = new PrismaUserRepository()
             const createUserUsecase = new CreateUserUseCase(userRepository)
@@ -38,5 +38,4 @@ export class CreateUserController {
                 error: error.message || "Erro inesperado ao criar usuário."
             })
         }
-    }
-}
+    }}

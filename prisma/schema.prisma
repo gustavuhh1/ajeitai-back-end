@@ -26,6 +26,25 @@ enum StatusService {
   CANCELED
 }
 
+enum BookingStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentsStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+enum BudgetStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
 model User {
   id            String   @id @default(uuid())
   name          String
@@ -44,12 +63,15 @@ model User {
   adresses Adress[]
   payments Payment[]
   rating   Rating[]
+  sessions Session[]
+  accounts Account[]
 
   client_services   Service[] @relation("ClientServices")
   provider_services Service[] @relation("ProviderServices")
 
-  sessions Session[]
-  accounts Account[]
+  client_bookings   Booking[] @relation("ClientBookings")
+  provider_bookings Booking[] @relation("ProviderBookings")
+  budgets           Budget[]
 
   @@map("users")
 }
@@ -57,16 +79,15 @@ model User {
 model Session {
   id        String   @id
   expiresAt DateTime
-  token     String
-  createdAt DateTime
-  updatedAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   ipAddress String?
   userAgent String?
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([token])
   @@map("sessions")
 }
 
@@ -83,8 +104,8 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
-  createdAt             DateTime
-  updatedAt             DateTime
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
   @@map("accounts")
 }
@@ -94,8 +115,8 @@ model Verification {
   identifier String
   value      String
   expiresAt  DateTime
-  createdAt  DateTime?
-  updatedAt  DateTime?
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
 
   @@map("verifications")
 }
@@ -132,9 +153,9 @@ model Service {
   start_date  DateTime?
   end_date    DateTime?
 
-  latitude Float?
-  longitude Float?
-  city String
+  latitude     Float?
+  longitude    Float?
+  city         String
   neighborhood String?
 
   category_id String
@@ -146,21 +167,36 @@ model Service {
   provider_id String?
   provider    User?   @relation("ProviderServices", fields: [provider_id], references: [id])
 
-  budget  Budget?
-  ratings Rating[]
+  budgets  Budget[]
+  ratings  Rating[]
+  bookings Booking[]
 
   @@map("services")
 }
 
-model Budget {
-  id        String  @id @default(uuid())
-  value     Decimal
-  aprovoval Boolean @default(false)
+model Booking {
+  id         String        @id @default(uuid())
+  scheduleAt DateTime
+  status     BookingStatus @default(SCHEDULED)
 
-  service_id String  @unique
+  service_id String
   service    Service @relation(fields: [service_id], references: [id])
 
-  @@map("budgets")
+  client_id String
+  client    User   @relation("ClientBookings", fields: [client_id], references: [id])
+
+  provider_id String
+  provider    User   @relation("ProviderBookings", fields: [provider_id], references: [id])
+
+  budget_id String @unique
+  budget    Budget @relation(fields: [budget_id], references: [id])
+
+  payment Payment?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("bookings")
 }
 
 model Rating {
@@ -177,14 +213,41 @@ model Rating {
   @@map("rating")
 }
 
+model Budget {
+  id            String       @id @default(uuid())
+  price         Decimal      @db.Decimal(10, 2)
+  description   String
+  estimatedDate DateTime
+  status        BudgetStatus @default(PENDING)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+
+  providerId String
+  provider   User   @relation(fields: [providerId], references: [id])
+
+  booking Booking?
+
+  @@map("budgets")
+}
+
 model Payment {
-  id                String  @id @default(uuid())
+  id                String         @id @default(uuid())
   method            String
-  value             Decimal
-  confirmed_payment Boolean @default(false)
+  amount            Decimal        @db.Decimal(10, 2)
+  status            PaymentsStatus @default(PENDING)
+  transaction_id    String?
+  confirmed_payment Boolean        @default(false)
+
+  booking_id String?  @unique
+  booking    Booking? @relation(fields: [booking_id], references: [id])
 
   client_id String
   client    User   @relation(fields: [client_id], references: [id])
+
+  createdAt DateTime @default(now())
 
   @@map("payments")
 }

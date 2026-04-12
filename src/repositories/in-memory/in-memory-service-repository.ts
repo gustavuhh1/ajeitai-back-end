@@ -1,5 +1,5 @@
 import { Service } from "@/entities/Service";
-import { IServiceRepository, ListServicesFilters, ListServicesResponse } from "../IServiceRepository";
+import { IServiceRepository, ListServicesFilters, ListServicesResponse, ServiceWithDetails } from "../IServiceRepository";
 
 export class InMemoryServiceRepository implements IServiceRepository {
     public items: Service[] = []
@@ -28,5 +28,23 @@ export class InMemoryServiceRepository implements IServiceRepository {
 
     async findById(id: string): Promise<Service | null> {
         return this.items.find(item=> item.id === id) || null
+    }
+
+    async findByIdWithDetails(id: string): Promise<ServiceWithDetails | null> {
+        const service = this.items.find(item=> item.id === id)
+
+        if(!service) return null
+
+        return {
+            id: service.id,
+            title: service.title,
+            description: service.description,
+            category_id: service.category_id,
+            client_id: service.client_id,
+            city: service.city,
+            status: service.status,
+            client: { name: 'Usuário Teste'},
+            budgetCount: 0
+        } as ServiceWithDetails
     }
 }
