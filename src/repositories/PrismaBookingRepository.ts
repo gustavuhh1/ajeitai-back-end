@@ -1,6 +1,6 @@
 import {Booking, BookingStatus} from '@prisma/client'
 import {prisma} from '@/utils/prisma'
-import { IBookingRepository } from './IBookingRepository'
+import { BookingWithPayment, IBookingRepository } from './IBookingRepository'
 
 export class PrismaBookingRepository implements IBookingRepository {
     async findManyByProviderId(providerId: string, status?: BookingStatus): Promise<Booking[]> {
@@ -31,5 +31,12 @@ export class PrismaBookingRepository implements IBookingRepository {
         })
 
         return bookings
+    }
+
+    async findById(id: string): Promise<BookingWithPayment | null> {
+        return await prisma.booking.findUnique({
+            where: { id },
+            include: {payment: true}
+        })
     }
 }

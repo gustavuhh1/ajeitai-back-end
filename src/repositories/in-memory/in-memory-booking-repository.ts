@@ -1,5 +1,5 @@
 import {Booking, BookingStatus} from '@prisma/client'
-import { IBookingRepository } from '../IBookingRepository'
+import { IBookingRepository, BookingWithPayment } from '../IBookingRepository'
 
 export class InMemoryBookingRepository implements IBookingRepository {
     public items: any[] = []
@@ -14,4 +14,14 @@ export class InMemoryBookingRepository implements IBookingRepository {
 
         return bookings
     }
+
+    async findById(id: string): Promise<BookingWithPayment | null> {
+        const booking = this.items.find((item) => item.id === id)
+
+        if (!booking) {
+        return null
+        }
+
+        return booking
+  }
 }

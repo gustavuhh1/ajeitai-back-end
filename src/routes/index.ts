@@ -9,6 +9,8 @@ import { CreateBudgetController } from '@/controllers/CreateBudgetController'
 import { authMiddleware } from '@/middlewares/auth-middleware'
 import {GetBudgetsController} from "@/controllers/GetBudgetsController";
 import {GetProviderBookingsController} from '@/controllers/GetProviderBookingsController'
+import { AcceptBudgetController } from '@/controllers/AcceptBudgetController'
+import { CreatePaymentController } from '@/controllers/CreatePaymentController'
 import {ensureRole} from '@/middlewares/ensure-role'
 
 export const router = Router()
@@ -22,6 +24,8 @@ const listAvaiableController = new ListAvaiableServicesController()
 const createBudgetController = new CreateBudgetController()
 const getBudgetController = new GetBudgetsController()
 const getProviderBookingsController = new GetProviderBookingsController()
+const acceptBudgetController = new AcceptBudgetController()
+const createPaymentController = new CreatePaymentController()
 
 
 router.post('/users', createUserController.handle)
@@ -34,6 +38,9 @@ router.post('/services', authMiddleware, createServiceController.handle)
 router.get('/services', authMiddleware, listAvaiableController.handle)
 router.get('/services/:id/budget', authMiddleware, getBudgetController.handle)
 router.post('/services/:id/budgets', authMiddleware, createBudgetController.handle)
+
+router.patch('/client/services/:serviceId/budgets:budgetId/accept', authMiddleware, ensureRole('CLIENT'), acceptBudgetController.handle)
+router.post('/client/bookings/:id/payment', authMiddleware, ensureRole('CLIENT'), createPaymentController.handle)
 
 router.get('/provider/bookings', authMiddleware, ensureRole('PROVIDER') ,getProviderBookingsController.handle)
 
