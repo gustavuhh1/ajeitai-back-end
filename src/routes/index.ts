@@ -1,8 +1,8 @@
-import {Router} from 'express'
-import {CreateUserController} from '@/controllers/CreateUserController'
+import { Router } from 'express'
+import { CreateUserController } from '@/controllers/CreateUserController'
 import { CreateServiceController } from '@/controllers/CreateServiceController'
 import { SignInController } from '@/controllers/SignInController'
-import { GetProfileController } from "@/controllers/GetProfileController"
+import { GetProfileController } from '@/controllers/GetProfileController'
 import { GetServiceByIdController } from '@/controllers/GetServiceByIdController'
 import { ListAvaiableServicesController } from '@/controllers/ListAvaiableServicesController'
 import { CreateBudgetController } from '@/controllers/CreateBudgetController'
