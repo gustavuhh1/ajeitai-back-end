@@ -1,8 +1,11 @@
+import { Booking} from "@prisma/client";
 import { Budget } from "@/entities/Budget";
 
 export interface IBudgetRepository {
     create(budget: Budget): Promise<void>
     findManyByServiceIdWithProvider(serviceId: string): Promise<BudgetWithProvider[]>;
+    findById(id: string): Promise<Budget | null>
+    acceptBudget(budgetId: string, serviceId: string): Promise<Booking>
 }
 
 export interface BudgetWithProvider {
