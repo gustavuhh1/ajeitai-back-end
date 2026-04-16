@@ -60,11 +60,12 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  adresses Adress[]
-  payments Payment[]
-  rating   Rating[]
-  sessions Session[]
-  accounts Account[]
+  adresses    Adress[]
+  payments    Payment[]
+  rating      Rating[]
+  sessions    Session[]
+  accounts    Account[]
+  resetTokens ResetToken[]
 
   client_services   Service[] @relation("ClientServices")
   provider_services Service[] @relation("ProviderServices")
@@ -250,4 +251,15 @@ model Payment {
   createdAt DateTime @default(now())
 
   @@map("payments")
+}
+
+model ResetToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  expiresAt DateTime
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("reset_tokens")
 }

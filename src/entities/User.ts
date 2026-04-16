@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto"
 
 export interface UserProps {
-    id?: string
+    id: string
     name: string
     email: string
     password?: string | null
