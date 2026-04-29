@@ -61,20 +61,45 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  adresses Address[]
-  payments Payment[]
-  rating   Rating[]
-  sessions Session[]
-  accounts Account[]
+  avgRating Decimal @default(0) @db.Decimal(3, 2)
+
+  adresses    Address[]
+  payments    Payment[]
+  rating      Rating[]
+  sessions    Session[]
+  accounts    Account[]
+  resetTokens ResetToken[]
+
+  reviewGiven    Review[] @relation("Reviewer")
+  reviewReceived Review[] @relation("Reviewed")
 
   client_services   Service[] @relation("ClientServices")
   provider_services Service[] @relation("ProviderServices")
-
   client_bookings   Booking[] @relation("ClientBookings")
   provider_bookings Booking[] @relation("ProviderBookings")
   budgets           Budget[]
 
   @@map("users")
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  bookingId String  @unique
+  booking   Booking @relation(fields: [bookingId], references: [id])
+
+  //Quem avalia (Cliente)
+  reviewerId String
+  reviewer   User   @relation("Reviewer", fields: [reviewerId], references: [id])
+
+  //Quem é avaliado (Prestador)
+  reviewedId String
+  reviewed   User   @relation("Reviewed", fields: [reviewedId], references: [id])
+
+  @@map("reviews")
 }
 
 model Session {
@@ -193,6 +218,7 @@ model Booking {
   budget    Budget @relation(fields: [budget_id], references: [id])
 
   payment Payment?
+  review  Review?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
