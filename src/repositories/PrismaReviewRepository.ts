@@ -1,7 +1,8 @@
 import {prisma} from '@/utils/prisma'
+import { IReviewRepository } from './IReviewRepository'
 import {Prisma, Review} from '@prisma/client'
 
-export class PrismaReviewRepository {
+export class PrismaReviewRepository implements IReviewRepository {
     async createWithTransaction(data: Prisma.ReviewUncheckedCreateInput): Promise<Review> {
         return await prisma.$transaction(async (tx) => {
             const review = await tx.review.create({data})
@@ -20,6 +21,14 @@ export class PrismaReviewRepository {
             })
 
             return review
+        })
+    }
+
+    async findByBookingId(bookingId: string): Promise<Review | null> {
+        return await prisma.review.findUnique({
+            where: {
+                bookingId
+            }
         })
     }
 }
