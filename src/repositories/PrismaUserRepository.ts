@@ -10,7 +10,7 @@ export class PrismaUserRepository implements IUserRepository {
             where: {email}
         })
 
-        if(!userData) {
+        if (!userData) {
             return null
         }
 
@@ -37,4 +37,14 @@ export class PrismaUserRepository implements IUserRepository {
             }
         })
     }
+
+    async resetPassword(password: string, token: string): Promise<void> {
+        await auth.api.resetPassword({
+            body: {
+                newPassword: password,
+                token: token
+            },
+        });
+    }
+
 }
