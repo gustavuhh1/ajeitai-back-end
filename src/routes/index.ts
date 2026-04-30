@@ -9,6 +9,7 @@ import { CreateBudgetController } from '@/controllers/CreateBudgetController'
 import { authMiddleware } from '@/middlewares/auth-middleware'
 import { GetBudgetsController } from '@/controllers/GetBudgetsController'
 import { ForgotPasswordController } from '@/controllers/ForgotPasswordController'
+import { ResetPasswordController } from "@/controllers/ResetPasswordController";
 
 export const router = Router()
 
@@ -21,11 +22,12 @@ const listAvaiableController = new ListAvaiableServicesController()
 const createBudgetController = new CreateBudgetController()
 const getBudgetController = new GetBudgetsController()
 const forgotPasswordController = new ForgotPasswordController();
+const resetPasswordController = new ResetPasswordController();
 
 router.post('/users', createUserController.handle)
 router.post('/sessions', signInController.handle)
 router.post('/auth/forgot-password', forgotPasswordController.handle)
-router.post('/auth/reset-password', forgotPasswordController.handle)
+router.post('/auth/reset-password', resetPasswordController.handle)
 
 router.post('/services', authMiddleware, createServiceController.handle)
 router.get('/services', authMiddleware, listAvaiableController.handle)
