@@ -7,6 +7,9 @@ import { GetServiceByIdController } from '@/controllers/GetServiceByIdController
 import { ListAvaiableServicesController } from '@/controllers/ListAvaiableServicesController'
 import { CreateBudgetController } from '@/controllers/CreateBudgetController'
 import { authMiddleware } from '@/middlewares/auth-middleware'
+import { GetBudgetsController } from '@/controllers/GetBudgetsController'
+import { ForgotPasswordController } from '@/controllers/ForgotPasswordController'
+import { ResetPasswordController } from "@/controllers/ResetPasswordController";
 import {GetBudgetsController} from "@/controllers/GetBudgetsController";
 import {GetProviderBookingsController} from '@/controllers/GetProviderBookingsController'
 import { AcceptBudgetController } from '@/controllers/AcceptBudgetController'
@@ -23,13 +26,16 @@ const getServiceByIdController = new GetServiceByIdController()
 const listAvaiableController = new ListAvaiableServicesController()
 const createBudgetController = new CreateBudgetController()
 const getBudgetController = new GetBudgetsController()
+const forgotPasswordController = new ForgotPasswordController();
+const resetPasswordController = new ResetPasswordController();
 const getProviderBookingsController = new GetProviderBookingsController()
 const acceptBudgetController = new AcceptBudgetController()
 const createPaymentController = new CreatePaymentController()
 
-
 router.post('/users', createUserController.handle)
 router.post('/sessions', signInController.handle)
+router.post('/auth/forgot-password', forgotPasswordController.handle)
+router.post('/auth/reset-password', resetPasswordController.handle)
 router.get('/services/:id', getServiceByIdController.handle)
 
 router.get('/me', authMiddleware, getProfileController.handle)
