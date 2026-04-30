@@ -19,6 +19,7 @@ enum Role {
 }
 
 enum StatusService {
+  IN_NEGOTIATION
   UNDER_ANALYSIS
   PENDING
   IN_PROGRESS
@@ -60,12 +61,11 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  adresses    Adress[]
-  payments    Payment[]
-  rating      Rating[]
-  sessions    Session[]
-  accounts    Account[]
-  resetTokens ResetToken[]
+  adresses Address[]
+  payments Payment[]
+  rating   Rating[]
+  sessions Session[]
+  accounts Account[]
 
   client_services   Service[] @relation("ClientServices")
   provider_services Service[] @relation("ProviderServices")
@@ -122,7 +122,7 @@ model Verification {
   @@map("verifications")
 }
 
-model Adress {
+model Address {
   id              String  @id @default(uuid())
   street          String
   number          String
