@@ -25,6 +25,7 @@ const forgotPasswordController = new ForgotPasswordController();
 router.post('/users', createUserController.handle)
 router.post('/sessions', signInController.handle)
 router.post('/auth/forgot-password', forgotPasswordController.handle)
+router.post('/auth/reset-password', forgotPasswordController.handle)
 
 router.post('/services', authMiddleware, createServiceController.handle)
 router.get('/services', authMiddleware, listAvaiableController.handle)
@@ -33,4 +34,3 @@ router.get('/services/:id/budget', authMiddleware, getBudgetController.handle)
 router.post('/services/:id/budgets', authMiddleware, createBudgetController.handle)
 
 router.get('/me', authMiddleware, getProfileController.handle)
-
