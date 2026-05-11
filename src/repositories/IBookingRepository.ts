@@ -11,4 +11,6 @@ export interface IBookingRepository {
     ): Promise<Booking[]>
 
     findById(id: string): Promise<BookingWithPayment | null>
+
+    save(booking: Booking): Promise<Booking>
 }
