@@ -19,6 +19,7 @@ import {ensureRole} from '@/middlewares/ensure-role'
 
 export const router = Router()
 
+
 const createUserController = new CreateUserController()
 const createServiceController = new CreateServiceController()
 const signInController = new SignInController()
@@ -48,7 +49,7 @@ router.get('/services', authMiddleware, listAvaiableController.handle)
 router.get('/services/:id/budget', authMiddleware, getBudgetController.handle)
 router.post('/services/:id/budgets', authMiddleware, createBudgetController.handle)
 
-router.patch('/client/services/:serviceId/budgets:budgetId/accept', authMiddleware, ensureRole('CLIENT'), acceptBudgetController.handle)
+router.patch('/client/services/:serviceId/budgets/:budgetId/accept', authMiddleware, ensureRole('CLIENT'), acceptBudgetController.handle)
 router.post('/client/bookings/:id/payment', authMiddleware, ensureRole('CLIENT'), createPaymentController.handle)
 
 router.get('/provider/bookings', authMiddleware, ensureRole('PROVIDER') ,getProviderBookingsController.handle)

@@ -1,0 +1,482 @@
+openapi: 3.0.0
+info:
+  title: Service Marketplace API
+  description: API para gestão de prestação de serviços, orçamentos e agendamentos.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor de Desenvolvimento
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        name:
+          type: string
+          example: "João da Silva"
+        email:
+          type: string
+          example: "joao.silva@email.com"
+        cpf:
+          type: string
+          example: "12345678901"
+        role:
+          type: string
+          enum: [CLIENT, PROVIDER, ADMIN]
+          example: "CLIENT"
+
+    Service:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+        title:
+          type: string
+          example: "Conserto de Geladeira Brastemp"
+        description:
+          type: string
+          example: "Geladeira não está gelando a parte de baixo, apenas o congelador."
+        client_id:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        category_id:
+          type: string
+          format: uuid
+          example: "a39b8200-e29b-41d4-a716-446655440011"
+        city:
+          type: string
+          example: "São Paulo"
+        neighborhood:
+          type: string
+          example: "Pinheiros"
+        latitude:
+          type: number
+          nullable: true
+          example: -23.56168
+        longitude:
+          type: number
+          nullable: true
+          example: -46.656139
+
+    Budget:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        price:
+          type: number
+          example: 150.00
+        description:
+          type: string
+          example: "Troca do termostato e gás. Serviço leva cerca de 2 horas."
+        estimatedDate:
+          type: string
+          format: date-time
+          example: "2023-11-20T14:30:00Z"
+        serviceId:
+          type: string
+          format: uuid
+          example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+        providerId:
+          type: string
+          format: uuid
+          example: "990e8400-e29b-41d4-a716-446655440099"
+        status:
+          type: string
+          enum: [PENDING, ACCEPTED, REJECTED]
+          example: "PENDING"
+
+    Booking:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "987e6543-e21b-12d3-a456-426614174000"
+        status:
+          type: string
+          enum: [PENDING, PAID, COMPLETED, CANCELLED]
+          example: "PAID"
+
+paths:
+  # --- AUTH & USERS ---
+  /users:
+    post:
+      tags: [Auth & Users]
+      summary: Cadastro de novo usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 3
+                  example: "Maria Oliveira"
+                email:
+                  type: string
+                  example: "maria.oliveira@email.com"
+                password:
+                  type: string
+                  minLength: 8
+                  example: "SenhaForte123!"
+                cpf:
+                  type: string
+                  minLength: 11
+                  maxLength: 11
+                  example: "09876543210"
+                role:
+                  type: string
+                  enum: [CLIENT, PROVIDER, ADMIN]
+                  example: "PROVIDER"
+      responses:
+        '201':
+          description: Usuário criado.
+
+  /sessions:
+    post:
+      tags: [Auth & Users]
+      summary: Login (Gera Token)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "maria.oliveira@email.com"
+                password:
+                  type: string
+                  example: "SenhaForte123!"
+      responses:
+        '200':
+          description: Login realizado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  user: { $ref: '#/components/schemas/User' }
+
+  /auth/forgot-password:
+    post:
+      tags: [Auth & Users]
+      summary: Solicitar recuperação de senha
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "maria.oliveira@email.com"
+      responses:
+        '200':
+          description: E-mail de recuperação enviado.
+
+  /auth/reset-password:
+    post:
+      tags: [Auth & Users]
+      summary: Redefinir senha com token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: "abc123xyz456"
+                password:
+                  type: string
+                  example: "NovaSenhaSegura456!"
+      responses:
+        '200':
+          description: Senha alterada com sucesso.
+
+  /me:
+    get:
+      tags: [Auth & Users]
+      summary: Ver perfil do usuário logado
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dados do perfil.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+
+  # --- SERVICES ---
+  /services:
+    get:
+      tags: [Services]
+      summary: Listar serviços disponíveis
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de serviços.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Service' }
+    post:
+      tags: [Services]
+      summary: Criar novo serviço (Apenas Clientes)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Instalação de Ar Condicionado"
+                description:
+                  type: string
+                  example: "Preciso instalar um split de 12000 BTUs no quarto."
+                category_id:
+                  type: string
+                  format: uuid
+                  example: "a39b8200-e29b-41d4-a716-446655440011"
+                city:
+                  type: string
+                  example: "Rio de Janeiro"
+                neighborhood:
+                  type: string
+                  example: "Copacabana"
+                latitude:
+                  type: number
+                  example: -22.9711
+                longitude:
+                  type: number
+                  example: -43.1822
+      responses:
+        '201':
+          description: Serviço criado.
+
+  /services/{id}:
+    get:
+      tags: [Services]
+      summary: Obter detalhes de um serviço (Público)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+      responses:
+        '200':
+          description: Detalhes do serviço.
+
+  # --- BUDGETS ---
+  /services/{id}/budget:
+    get:
+      tags: [Budgets]
+      summary: Ver orçamento atual de um serviço
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+      responses:
+        '200':
+          description: Dados do orçamento.
+
+  /services/{id}/budgets:
+    post:
+      tags: [Budgets]
+      summary: Enviar proposta de orçamento para um serviço (Apenas Prestadores)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                price:
+                  type: number
+                  example: 350.00
+                description:
+                  type: string
+                  example: "Inclui material e mão de obra para a instalação."
+                estimatedDate:
+                  type: string
+                  format: date-time
+                  example: "2023-11-25T09:00:00Z"
+      responses:
+        '201':
+          description: Orçamento enviado.
+
+  # --- CLIENT ACTIONS ---
+  /client/services/{serviceId}/budgets/{budgetId}/accept:
+    patch:
+      tags: [Client]
+      summary: Aceitar um orçamento (Apenas Clientes)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+        - name: budgetId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '200':
+          description: Orçamento aceito e reserva gerada.
+
+  /client/bookings/{id}/payment:
+    post:
+      tags: [Client]
+      summary: Realizar pagamento de uma reserva
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "987e6543-e21b-12d3-a456-426614174000"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  example: 350.00
+                method:
+                  type: string
+                  example: "CREDIT_CARD"
+      responses:
+        '201':
+          description: Pagamento processado.
+
+  # --- PROVIDER ACTIONS ---
+  /provider/bookings:
+    get:
+      tags: [Provider]
+      summary: Listar agendamentos recebidos (Apenas Prestadores)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de agendamentos.
+
+  /bookings/{id}/status:
+    patch:
+      tags: [Provider]
+      summary: Atualizar status de um agendamento (Apenas Prestadores)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "987e6543-e21b-12d3-a456-426614174000"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [COMPLETED, CANCELLED]
+                  example: "COMPLETED"
+      responses:
+        '200':
+          description: Status atualizado.
+
+  # --- REVIEWS ---
+  /reviews:
+    post:
+      tags: [Client]
+      summary: Criar avaliação de um serviço finalizado (Apenas Clientes)
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bookingId:
+                  type: string
+                  format: uuid
+                  example: "987e6543-e21b-12d3-a456-426614174000"
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                  example: 5
+                comment:
+                  type: string
+                  maxLength: 500
+                  example: "Serviço excelente e muito rápido!"
+      responses:
+        '201':
+          description: Avaliação enviada.
