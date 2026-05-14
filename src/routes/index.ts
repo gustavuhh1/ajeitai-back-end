@@ -7,7 +7,6 @@ import { GetServiceByIdController } from '@/controllers/GetServiceByIdController
 import { ListAvaiableServicesController } from '@/controllers/ListAvaiableServicesController'
 import { CreateBudgetController } from '@/controllers/CreateBudgetController'
 import { authMiddleware } from '@/middlewares/auth-middleware'
-import { GetBudgetsController } from '@/controllers/GetBudgetsController'
 import { ForgotPasswordController } from '@/controllers/ForgotPasswordController'
 import { ResetPasswordController } from "@/controllers/ResetPasswordController";
 import {GetBudgetsController} from "@/controllers/GetBudgetsController";
@@ -15,6 +14,7 @@ import {GetProviderBookingsController} from '@/controllers/GetProviderBookingsCo
 import { AcceptBudgetController } from '@/controllers/AcceptBudgetController'
 import { CreatePaymentController } from '@/controllers/CreatePaymentController'
 import { CreateReviewController } from '@/controllers/CreateReviewController'
+import { UpdateBookingStatusController } from '@/controllers/UpdateBookingStatusController'
 import {ensureRole} from '@/middlewares/ensure-role'
 
 export const router = Router()
@@ -33,6 +33,7 @@ const getProviderBookingsController = new GetProviderBookingsController()
 const acceptBudgetController = new AcceptBudgetController()
 const createPaymentController = new CreatePaymentController()
 const createReviewController = new CreateReviewController()
+const updateBookingStatusController = new UpdateBookingStatusController()
 
 router.post('/users', createUserController.handle)
 router.post('/sessions', signInController.handle)
@@ -54,3 +55,4 @@ router.get('/provider/bookings', authMiddleware, ensureRole('PROVIDER') ,getProv
 
 router.post('/reviews', authMiddleware, ensureRole('CLIENT'), createReviewController.handle)
 
+router.patch('/bookings/:id/status', authMiddleware, ensureRole('PROVIDER'), updateBookingStatusController.handle)

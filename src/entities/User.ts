@@ -32,4 +32,8 @@ export class User {
     get password() { return this.props.password}
     get cpf() {return this.props.cpf}
     get role() { return this.props.role}
+
+    set avgRating(value: Prisma.Decimal) {
+        this.props.avgRating = value
+    } 
 }

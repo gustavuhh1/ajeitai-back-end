@@ -39,4 +39,18 @@ export class PrismaBookingRepository implements IBookingRepository {
             include: {payment: true}
         })
     }
+
+    async save(booking: Booking): Promise<Booking> {
+        const updatedBooking = await prisma.booking.update({
+            where: {
+                id: booking.id,
+            },
+            data: {
+                status: booking.status,
+                updatedAt: new Date(),
+            }
+        })
+
+        return updatedBooking
+    }
 }

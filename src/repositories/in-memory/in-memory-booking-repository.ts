@@ -24,4 +24,16 @@ export class InMemoryBookingRepository implements IBookingRepository {
 
         return booking
   }
+
+  async save(booking: Booking): Promise<Booking> {
+      const itemIndex = this.items.findIndex((item)=> item.id === booking.id)
+
+      if (itemIndex >= 0) {
+        this.items[itemIndex] = booking
+      } else {
+        this.items.push(booking)
+      }
+
+      return booking
+  }
 }
