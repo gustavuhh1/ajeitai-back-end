@@ -12,7 +12,7 @@ export interface ServiceProps {
     | "EM_ANDAMENTO"
     | "FINALIZADO"
     | "CANCELADO";
-  category_id: string;
+  categoryIds: string[];
   client_id: string;
   provider_id?: string | null;
   start_date?: Date | null;
@@ -34,6 +34,14 @@ export class Service {
 
     if (!props.city) {
       throw new Error("A cidade do serviço é obrigatória para localização");
+    }
+
+    if (!props.categoryIds || props.categoryIds.length === 0) {
+      throw new Error("O serviço precisa ter pelo menos uma categoria");
+    }
+
+    if (props.categoryIds.length > 3) {
+      throw new Error("O serviço pode ter no máximo 3 categorias");
     }
 
     this.props = {
@@ -65,8 +73,8 @@ export class Service {
   get status() {
     return this.props.status;
   }
-  get category_id() {
-    return this.props.category_id;
+  get categoryIds() {
+    return this.props.categoryIds;
   }
   get client_id() {
     return this.props.client_id;

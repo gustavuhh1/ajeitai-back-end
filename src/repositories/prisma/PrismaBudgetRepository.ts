@@ -18,6 +18,18 @@ export class PrismaBudgetRepository implements IBudgetRepository {
     });
   }
 
+  async update(budget: BudgetEntity): Promise<void> {
+    await prisma.budget.update({
+      where: { id: budget.id },
+      data: {
+        price: new Prisma.Decimal(budget.price),
+        description: budget.description,
+        estimatedDate: budget.estimatedDate,
+        status: budget.status as any,
+      },
+    });
+  }
+
   async acceptBudget(budgetId: string, serviceId: string): Promise<void> {
     await prisma.$transaction(async (tx) => {
       const acceptedBudget = await tx.budget.update({
@@ -75,6 +87,8 @@ export class PrismaBudgetRepository implements IBudgetRepository {
             id: true,
             name: true,
             description: true,
+            avatar_url: true,
+            avgRating: true,
           },
         },
       },
@@ -91,6 +105,8 @@ export class PrismaBudgetRepository implements IBudgetRepository {
         id: item.provider.id,
         name: item.provider.name,
         description: item.provider.description,
+        avatar_url: item.provider.avatar_url,
+        avgRating: Number(item.provider.avgRating),
       },
     }));
   }

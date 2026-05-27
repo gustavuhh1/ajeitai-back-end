@@ -19,6 +19,9 @@ export class PrismaUserRepository implements IUserRepository {
       email: userData.email,
       password: userData.password,
       cpf: userData.cpf,
+      phone: userData.phone,
+      age: userData.age,
+      description: userData.description,
       role: userData.role as UserRoles,
       avgRating: userData.avgRating,
       created_at: userData.createdAt,
@@ -34,6 +37,9 @@ export class PrismaUserRepository implements IUserRepository {
         password: user.password as any,
         cpf: user.cpf,
         role: user.role as UserRoles,
+        phone: user.phone ?? undefined,
+        age: user.age ?? undefined,
+        description: user.description ?? undefined,
       },
     });
   }

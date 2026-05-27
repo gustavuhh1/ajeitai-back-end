@@ -3,6 +3,7 @@ import { Message } from "@/entities/Message";
 import { IMessageRepository } from "../IMessageRepository";
 
 export class PrismaMessageRepository implements IMessageRepository {
+  // Cria uma mensagem no banco de dados
   async create(message: Message): Promise<void> {
     await prisma.message.create({
       data: {
@@ -15,8 +16,8 @@ export class PrismaMessageRepository implements IMessageRepository {
       },
     });
   }
-  
 
+  // Busca as mensagens de um orçamento específico
   async findManyByBudgetId(budgetId: string): Promise<Message[]> {
     const messages = await prisma.message.findMany({
       where: { budgetId },
@@ -35,6 +36,4 @@ export class PrismaMessageRepository implements IMessageRepository {
         }),
     );
   }
-
-  
 }

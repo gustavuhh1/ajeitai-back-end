@@ -5,6 +5,7 @@ export interface IBudgetRepository {
   findManyByServiceIdWithProvider(serviceId: string): Promise<BudgetWithProvider[]>;
   findById(id: string): Promise<Budget | null>;
   acceptBudget(budgetId: string, serviceId: string): Promise<void>;
+  update(budget: Budget): Promise<void>;
 }
 
 export interface BudgetWithProvider {
@@ -18,5 +19,7 @@ export interface BudgetWithProvider {
     id: string;
     name: string;
     description: string | null;
+    avatar_url: string | null;
+    avgRating: number;
   };
 }

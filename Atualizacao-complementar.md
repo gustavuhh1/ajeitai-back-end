@@ -30,12 +30,14 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] Repositórios a serem refeitos: `User`, `Category`, `Service`, `Budget`, `Message`, `Payment`, `Review`, `ResetToken`.
 
 ## Fase 4: Camada de UseCases e Factories
-- [ ] Criar UseCases focados nas rotas que o Frontend vai consumir.
-- [ ] Aplicar o padrão de Injeção de Dependência através da pasta `src/usecases/factories`.
-- [ ] Recriar fluxo de Usuários (Registro, Login, Senha).
-- [ ] Recriar fluxo de Serviços (Criação, Listagem, Detalhes).
-- [ ] Recriar fluxo de Orçamento e Chat (Nova oferta, Contra-proposta, Aceite, Envio de Mensagem).
-- [ ] Recriar fluxo Financeiro e Finalização (Pagamento e Avaliação).
+- [x] Adicionar campos adicionais no better-auth (avatar, biografia e média de avaliação) e prisma e fazer a migração.
+- [x] Criar UseCases focados nas rotas que o Frontend vai consumir.
+- [x] Aplicar o padrão de Injeção de Dependência através da pasta `src/usecases/factories`.
+- [x] Recriar fluxo de Usuários (Registro, Login, Senha).
+- [x] Recriar fluxo de Serviços (Criação, Listagem, Detalhes).
+- [x] Refatorar Serviço para aceitar múltiplas Categorias (N:M, máximo 3) melhorando alcance nas buscas.
+- [x] Recriar fluxo de Orçamento e Chat (Nova oferta, Contra-proposta, Aceite, Envio de Mensagem).
+- [x] Recriar fluxo Financeiro e Finalização (Pagamento e Avaliação).
 
 ## Fase 5: Camada de Controllers
 - [ ] Criar Controllers enxutos para cada UseCase.

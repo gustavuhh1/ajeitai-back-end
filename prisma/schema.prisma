@@ -180,8 +180,7 @@ model Service {
   city         String
   neighborhood String?
 
-  category_id String
-  category    Category @relation(fields: [category_id], references: [id])
+  categories Category[]
 
   client_id String
   client    User   @relation("ClientServices", fields: [client_id], references: [id])

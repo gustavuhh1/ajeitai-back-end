@@ -14,7 +14,9 @@ export class PrismaServiceRepository implements IServiceRepository {
         id: service.id,
         title: service.title,
         description: service.description,
-        category_id: service.category_id,
+        categories: {
+          connect: service.categoryIds.map(id => ({ id }))
+        },
         client_id: service.client_id,
         status: service.status,
         city: service.city,
@@ -28,6 +30,7 @@ export class PrismaServiceRepository implements IServiceRepository {
   async findById(id: string) {
     const serviceData = await prisma.service.findUnique({
       where: { id },
+      include: { categories: true }
     });
 
     if (!serviceData) return null;
@@ -37,7 +40,7 @@ export class PrismaServiceRepository implements IServiceRepository {
       title: serviceData.title,
       images_url: serviceData.images_url as string[] ?? [],
       description: serviceData.description,
-      category_id: serviceData.category_id,
+      categoryIds: serviceData.categories.map(c => c.id),
       client_id: serviceData.client_id,
       provider_id: serviceData.provider_id,
       start_date: serviceData.start_date,
@@ -50,8 +53,9 @@ export class PrismaServiceRepository implements IServiceRepository {
     });
   }
 
+  // Faz um select no banco de dados e retorna todos os serviços disponiveis
   async findAllAvailable({
-    category_id,
+    categoryId,
     city,
     page,
     limit,
@@ -60,7 +64,7 @@ export class PrismaServiceRepository implements IServiceRepository {
 
     const where = {
       status: "ABERTO" as any,
-      category_id: category_id || undefined,
+      categories: categoryId ? { some: { id: categoryId } } : undefined,
       city: city ? { contains: city, mode: "insensitive" as any } : undefined,
     };
 
@@ -70,7 +74,7 @@ export class PrismaServiceRepository implements IServiceRepository {
         take: limit,
         skip,
         orderBy: { id: "desc" },
-        include: { category: true },
+        include: { categories: true },
       }),
       prisma.service.count({ where }),
     ]);
@@ -83,7 +87,7 @@ export class PrismaServiceRepository implements IServiceRepository {
           images_url: data.images_url,
           description: data.description,
           status: data.status as any,
-          category_id: data.category_id,
+          categoryIds: data.categories.map((c: any) => c.id),
           client_id: data.client_id,
           city: data.city,
           latitude: data.latitude,
@@ -95,10 +99,12 @@ export class PrismaServiceRepository implements IServiceRepository {
     return { items, total };
   }
 
+  // faz um select no banco de dados e retorna todos os detalhes do serviço
   async findByIdWithDetails(id: string): Promise<ServiceWithDetails | null> {
     const serviceData = await prisma.service.findUnique({
       where: { id },
       include: {
+        categories: true,
         client: {
           select: {
             id: true,
@@ -117,7 +123,7 @@ export class PrismaServiceRepository implements IServiceRepository {
       title: serviceData.title,
       images_url: serviceData.images_url,
       description: serviceData.description,
-      category_id: serviceData.category_id,
+      categoryIds: serviceData.categories.map(c => c.id),
       client_id: serviceData.client_id,
       provider_id: serviceData.provider_id,
       status: serviceData.status as any,
