@@ -57,4 +57,28 @@ export class Service {
     get longitude() { return this.props.longitude }
     get city() { return this.props.city }
     get neighborhood() { return this.props.neighborhood }
+
+    // Domain Methods
+    public aceitarOrcamento(providerId: string) {
+        this.props.provider_id = providerId;
+        this.props.status = 'AGUARDANDO_PAGAMENTO';
+    }
+
+    public confirmarPagamento() {
+        this.props.status = 'APROVADO';
+    }
+
+    public iniciarServico() {
+        if (this.props.status !== 'APROVADO') throw new Error("Serviço precisa estar aprovado para iniciar");
+        this.props.status = 'EM_ANDAMENTO';
+    }
+
+    public finalizarServico() {
+        if (this.props.status !== 'EM_ANDAMENTO') throw new Error("Serviço precisa estar em andamento para ser finalizado");
+        this.props.status = 'FINALIZADO';
+    }
+
+    public cancelar() {
+        this.props.status = 'CANCELADO';
+    }
 }

@@ -34,4 +34,20 @@ export class Budget {
     get description() { return this.props.description }
     get estimatedDate() { return this.props.estimatedDate }
     get status() { return this.props.status }
+
+
+    public fazerCotraProposta(newPrice: number, newDate: Date, newDescription: string, isFromClient: boolean) {
+        if (newPrice <= 0) throw new Error("O preço da proposta deve ser maior que zero");
+        
+        this.props.price = newPrice;
+        this.props.estimatedDate = newDate;
+        this.props.description = newDescription;
+        this.props.status = isFromClient ? 'AGUARDANDO_PRESTADOR' : 'AGUARDANDO_CLIENTE';
+        this.props.updatedAt = new Date();
+    }
+
+    public accept() {
+        this.props.status = 'ACEITO';
+        this.props.updatedAt = new Date();
+    }
 }

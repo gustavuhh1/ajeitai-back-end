@@ -30,4 +30,6 @@ export class Message {
     get senderId() { return this.props.senderId }
     get budgetId() { return this.props.budgetId }
     get createdAt() { return this.props.createdAt }
+
+
 }
