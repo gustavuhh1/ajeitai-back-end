@@ -48,3 +48,8 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [ ] Limpar e refazer os arquivos de rotas em `src/routes/`.
 - [ ] Conectar os novos Controllers.
 - [ ] Aplicar os middlewares de autenticação (`ensureAuthenticated`) onde for necessário.
+
+## Fase 7: Testes Unitários (In-Memory)
+- [x] Ambiente de testes configurado (Vitest e scripts no package.json).
+- [ ] Criar repositórios "In-Memory" (`src/repositories/in-memory/`) implementando as interfaces para rodar os testes sem o Prisma.
+- [ ] Criar os arquivos de testes em `src/usecases/tests/` cobrindo todos os UseCases (Usuários, Serviços, Orçamentos, Chat, Financeiro).
