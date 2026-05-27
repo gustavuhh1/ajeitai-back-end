@@ -22,22 +22,27 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] Criar `IMessageRepository` e `PrismaMessageRepository`.
 - [x] Atualizar repositórios de `Payment` e `Review` para as novas relações.
 
-## Fase 3: Use Cases (Regras de Negócio)
-- [ ] Deletar Use Cases referentes a `Booking`.
-- [ ] Refatorar `CreateBudgetUseCase`: Criação da primeira oferta pelo prestador.
-- [ ] Criar `CounterProposalUseCase`: Atualizar valor/data do Budget e mudar o status de quem deve aceitar.
-- [ ] Refatorar `AcceptBudgetUseCase`: Aprovação do orçamento e transição do Serviço para `AGUARDANDO_PAGAMENTO`.
-- [ ] Criar `SendMessageUseCase`: Lógica para salvar mensagens do chat e vincular url da imagem.
-- [ ] Criar `ListMessagesUseCase`: Retornar histórico do chat do orçamento.
-- [ ] Atualizar lógica de Pagamento simulado: Transita Serviço para `APROVADO` e Budget para `PAGO`.
-- [ ] Criar lógica para transição de Serviço (`EM_ANDAMENTO` e `FINALIZADO`).
+## Fase 3: Limpeza e Refatoração de Repositórios
+- [x] Refinar Entidades com métodos de domínio (Criar `Payment` e `Review`, adicionar métodos no `Budget` e `Service`).
+- [x] Deletar todos os arquivos das pastas `src/repositories`, `src/usecases` e `src/controllers`.
+- [x] Reconstruir Interfaces na raiz (`src/repositories/IUserRepository.ts`, `IServiceRepository.ts`, etc).
+- [x] Reconstruir Implementações dentro da pasta Prisma (`src/repositories/prisma/PrismaUserRepository.ts`, etc).
+- [x] Repositórios a serem refeitos: `User`, `Category`, `Service`, `Budget`, `Message`, `Payment`, `Review`, `ResetToken`.
 
-## Fase 4: Infraestrutura, Controllers e Rotas
-- [ ] Remover Controllers e Rotas de `Booking`.
-- [ ] Configurar pasta estática local (`/public/uploads`) para receber imagens.
-- [ ] Criar Rota/Controller de Upload de Imagens.
-- [ ] Criar Controllers para o Chat (`Message`).
-- [ ] Refatorar Controllers de Orçamento (Criação, Contra-proposta, Aceite).
-- [ ] Refatorar Controllers de Pagamento e Avaliação.
-- [ ] Instalar e configurar WebSockets (`Socket.io`) no `server.ts`.
-- [ ] Implementar emissão e recepção de eventos de chat via Socket.io.
+## Fase 4: Camada de UseCases e Factories
+- [ ] Criar UseCases focados nas rotas que o Frontend vai consumir.
+- [ ] Aplicar o padrão de Injeção de Dependência através da pasta `src/usecases/factories`.
+- [ ] Recriar fluxo de Usuários (Registro, Login, Senha).
+- [ ] Recriar fluxo de Serviços (Criação, Listagem, Detalhes).
+- [ ] Recriar fluxo de Orçamento e Chat (Nova oferta, Contra-proposta, Aceite, Envio de Mensagem).
+- [ ] Recriar fluxo Financeiro e Finalização (Pagamento e Avaliação).
+
+## Fase 5: Camada de Controllers
+- [ ] Criar Controllers enxutos para cada UseCase.
+- [ ] Implementar validação de dados com `zod` e capturar `request/response`.
+- [ ] Chamar as instâncias através das Factories criadas na Fase 4.
+
+## Fase 6: Camada de Rotas (Routes)
+- [ ] Limpar e refazer os arquivos de rotas em `src/routes/`.
+- [ ] Conectar os novos Controllers.
+- [ ] Aplicar os middlewares de autenticação (`ensureAuthenticated`) onde for necessário.
