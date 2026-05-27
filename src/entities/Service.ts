@@ -3,6 +3,7 @@ import {randomUUID} from 'node:crypto'
 export interface ServiceProps {
     id?: string
     title: string
+    // TODO: colocar fotos[] como tipo
     description: string
     status?: 'ABERTO' | 'AGUARDANDO_PAGAMENTO' | 'APROVADO' | 'EM_ANDAMENTO' | 'FINALIZADO' | 'CANCELADO'
     category_id: string

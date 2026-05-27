@@ -1,0 +1,49 @@
+import { prisma } from "@/utils/prisma";
+import { User, UserRoles } from "@/entities/User";
+import { auth } from "@/auth/auth";
+import { IUserRepository } from "../IUserRepository";
+
+export class PrismaUserRepository implements IUserRepository {
+  async findByEmail(email: string): Promise<User | null> {
+    const userData = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!userData) {
+      return null;
+    }
+
+    return new User({
+      id: userData.id,
+      name: userData.name,
+      email: userData.email,
+      password: userData.password,
+      cpf: userData.cpf,
+      role: userData.role as UserRoles,
+      avgRating: userData.avgRating,
+      created_at: userData.createdAt,
+    });
+  }
+
+  async save(user: User): Promise<void> {
+    await auth.api.signUpEmail({
+      body: {
+        name: user.name,
+        image: user.avatar_url ?? undefined,
+        email: user.email,
+        password: user.password as any,
+        cpf: user.cpf,
+        role: user.role as UserRoles,
+      },
+    });
+  }
+
+  async resetPassword(password: string, token: string): Promise<void> {
+    await auth.api.resetPassword({
+      body: {
+        newPassword: password,
+        token: token,
+      },
+    });
+  }
+}

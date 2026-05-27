@@ -169,6 +169,7 @@ model Category {
 model Service {
   id          String        @id @default(uuid())
   title       String
+  // TODO: colocar fotos[] como tipo
   description String
   status      StatusService @default(ABERTO)
   start_date  DateTime?

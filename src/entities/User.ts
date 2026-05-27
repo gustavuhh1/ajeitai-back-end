@@ -13,6 +13,12 @@ export interface UserProps {
   created_at?: Date;
 }
 
+export enum UserRoles {
+  CLIENT = "CLIENT",
+  PROVIDER = "PROVIDER",
+  ADMIN = "ADMIN",
+}
+
 export class User {
   private props: UserProps;
 
