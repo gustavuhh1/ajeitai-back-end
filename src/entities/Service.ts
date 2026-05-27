@@ -4,7 +4,7 @@ export interface ServiceProps {
     id?: string
     title: string
     description: string
-    status?: 'UNDER_ANALYSIS' | 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELED'
+    status?: 'ABERTO' | 'AGUARDANDO_PAGAMENTO' | 'APROVADO' | 'EM_ANDAMENTO' | 'FINALIZADO' | 'CANCELADO'
     category_id: string
     client_id: string
     provider_id?: string | null
@@ -32,7 +32,7 @@ export class Service {
         this.props = {
             ...props,
             id: props.id ?? randomUUID(),
-            status: props.status ?? 'UNDER_ANALYSIS',
+            status: props.status ?? 'ABERTO',
             provider_id: props.provider_id ?? null,
             start_date: props.start_date ?? null,
             end_date: props.end_date ?? null,

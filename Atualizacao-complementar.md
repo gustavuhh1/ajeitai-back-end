@@ -15,11 +15,12 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] Gerar e aplicar a migration (`npx prisma migrate dev`).
 
 ## Fase 2: Repositórios e Entidades
-- [ ] Deletar `IBookingRepository` e sua implementação (`PrismaBookingRepository`).
-- [ ] Atualizar `IServiceRepository` e `PrismaServiceRepository` (novos status, remover referências de Booking).
-- [ ] Atualizar `IBudgetRepository` e `PrismaBudgetRepository` (novos status, busca simplificada).
-- [ ] Criar `IMessageRepository` e `PrismaMessageRepository`.
-- [ ] Atualizar repositórios de `Payment` e `Review` para as novas relações.
+- [x] Atualizar/Criar Entidades de Domínio (`src/entities/Service.ts`, `Budget.ts`, `Message.ts`).
+- [x] Deletar `IBookingRepository` e sua implementação (`PrismaBookingRepository`).
+- [x] Atualizar `IServiceRepository` e `PrismaServiceRepository` (novos status, remover referências de Booking).
+- [x] Atualizar `IBudgetRepository` e `PrismaBudgetRepository` (novos status, busca simplificada).
+- [x] Criar `IMessageRepository` e `PrismaMessageRepository`.
+- [x] Atualizar repositórios de `Payment` e `Review` para as novas relações.
 
 ## Fase 3: Use Cases (Regras de Negócio)
 - [ ] Deletar Use Cases referentes a `Booking`.

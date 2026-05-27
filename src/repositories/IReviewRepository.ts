@@ -1,6 +1,6 @@
-import {Review, Prisma} from '@prisma/client'
+import { Review, Prisma } from "@prisma/client";
 
 export interface IReviewRepository {
-    createWithTransaction(data: Prisma.ReviewUncheckedCreateInput): Promise<Review>
-    findByBookingId(bookingId: string): Promise<Review | null>
+  createWithTransaction(data: Prisma.ReviewUncheckedCreateInput): Promise<Review>;
+  findByServiceId(serviceId: string): Promise<Review | null>;
 }

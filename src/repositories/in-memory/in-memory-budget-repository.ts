@@ -1,4 +1,4 @@
-import {Budget, Booking, BookingStatus, BudgetStatus} from '@prisma/client'
+import {Budget, BudgetStatus} from '@prisma/client'
 import { IBudgetRepository, BudgetWithProvider } from '../IBudgetRepository'
 import { Budget as BudgetEntity } from '@/entities/Budget'
 import { randomUUID } from 'node:crypto'
@@ -36,20 +36,6 @@ export class InMemoryBudgetRepository implements IBudgetRepository {
                 item.status = 'REJECTED' as BudgetStatus
             }
         })
-
-       const booking = {
-            id: randomUUID(),
-            scheduleAt: acceptedBudget.estimatedDate,
-            status: 'SCHEDULED' as BookingStatus,
-            service_id: serviceId,
-            client_id: 'any-client-id', 
-            provider_id: acceptedBudget.providerId,
-            budget_id: budgetId,
-            provider: { id: acceptedBudget.providerId, name: 'Provider Name' }
-        };
-
-        this.bookings.push(booking)
-        return booking
     }
 
     async create(budget: BudgetEntity): Promise<void> {

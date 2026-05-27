@@ -7,7 +7,7 @@ export interface BudgetProps {
     price: number
     description: string
     estimatedDate: Date
-    status?: 'PENDING' | 'ACCEPTED' | 'REJECTED'
+    status?: 'AGUARDANDO_CLIENTE' | 'AGUARDANDO_PRESTADOR' | 'ACEITO' | 'PAGO' | 'RECUSADO'
     createdAt?: Date
     updatedAt?: Date
 }
@@ -23,7 +23,7 @@ export class Budget {
         this.props = {
             ...props,
             id: props.id ?? randomUUID(),
-            status: props.status ?? 'PENDING',
+            status: props.status ?? 'AGUARDANDO_CLIENTE',
         }
     }
 
