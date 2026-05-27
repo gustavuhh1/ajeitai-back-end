@@ -169,7 +169,7 @@ model Category {
 model Service {
   id          String        @id @default(uuid())
   title       String
-  // TODO: colocar fotos[] como tipo
+  images_url  String[]      @default([])
   description String
   status      StatusService @default(ABERTO)
   start_date  DateTime?
@@ -189,9 +189,9 @@ model Service {
   provider_id String?
   provider    User?   @relation("ProviderServices", fields: [provider_id], references: [id])
 
-  budgets  Budget[]
-  ratings  Rating[]
-  review   Review?
+  budgets Budget[]
+  ratings Rating[]
+  review  Review?
 
   @@map("services")
 }
@@ -239,8 +239,8 @@ model Payment {
   transaction_id    String?
   confirmed_payment Boolean        @default(false)
 
-  budget_id String?  @unique
-  budget    Budget?  @relation(fields: [budget_id], references: [id])
+  budget_id String? @unique
+  budget    Budget? @relation(fields: [budget_id], references: [id])
 
   client_id String
   client    User   @relation(fields: [client_id], references: [id])

@@ -35,6 +35,7 @@ export class PrismaServiceRepository implements IServiceRepository {
     return new Service({
       id: serviceData.id,
       title: serviceData.title,
+      images_url: serviceData.images_url as string[] ?? [],
       description: serviceData.description,
       category_id: serviceData.category_id,
       client_id: serviceData.client_id,
@@ -79,6 +80,7 @@ export class PrismaServiceRepository implements IServiceRepository {
         new Service({
           id: data.id,
           title: data.title,
+          images_url: data.images_url,
           description: data.description,
           status: data.status as any,
           category_id: data.category_id,
@@ -113,6 +115,7 @@ export class PrismaServiceRepository implements IServiceRepository {
     const service = new Service({
       id: serviceData.id,
       title: serviceData.title,
+      images_url: serviceData.images_url,
       description: serviceData.description,
       category_id: serviceData.category_id,
       client_id: serviceData.client_id,
