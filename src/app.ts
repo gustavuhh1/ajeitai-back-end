@@ -6,6 +6,7 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from "./auth/auth";
 import http from 'node:http'
 import { initSocket } from './websockets/socket';
+import { ErrorHandler } from "./middlewares/ErrorHandler";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(router);
 
+app.use(ErrorHandler);
+
 export const server = http.createServer(app);
 initSocket(server);
-
