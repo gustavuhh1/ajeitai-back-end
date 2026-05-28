@@ -52,5 +52,5 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 
 ## Fase 7: Testes Unitários (In-Memory)
 - [x] Ambiente de testes configurado (Vitest e scripts no package.json).
-- [ ] Criar repositórios "In-Memory" (`src/repositories/in-memory/`) implementando as interfaces para rodar os testes sem o Prisma.
-- [ ] Criar os arquivos de testes em `src/usecases/tests/` cobrindo todos os UseCases (Usuários, Serviços, Orçamentos, Chat, Financeiro).
+- [x] Criar repositórios "In-Memory" (`src/repositories/in-memory/`) implementando as interfaces para rodar os testes sem o Prisma.
+- [x] Criar os arquivos de testes em `src/usecases/tests/` cobrindo todos os UseCases (Usuários, Serviços, Orçamentos, Chat, Financeiro).
