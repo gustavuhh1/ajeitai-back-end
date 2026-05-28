@@ -60,3 +60,11 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] Criar estrutura de "Salas" (`Rooms`) baseadas no ID do Orçamento (`budgetId`).
 - [x] Implementar eventos de conexão, desconexão, `join_room` e emissão de mensagens (`send_message`).
 - [x] Atualizar o UseCase `SendMessageUseCase` para disparar notificações via Socket além de salvar no banco de dados.
+
+## Fase 9: Abacate pay (GATEWAY PAGAMENTO)
+
+## Fase 10: Deploy e Preparação do Ambiente
+- [x] Substituir o compilador padrão `tsc` pelo `tsup` para melhor performance e resolução de *path aliases* (`@/`).
+- [x] Atualizar o script de `"build"` no `package.json` para utilizar `tsup src/server.ts --format cjs --clean`.
+- [x] Validar e configurar o script de `"start"` para rodar a versão compilada (`node dist/server.js`).
+- [x] Instalar dependência de desenvolvimento do tsup (`npm install tsup -D`).
