@@ -109,7 +109,7 @@ export class PrismaServiceRepository implements IServiceRepository {
           select: {
             id: true,
             name: true,
-            avatar_url: true,
+            image: true,
           },
         },
         budgets: true,
@@ -139,3 +139,4 @@ export class PrismaServiceRepository implements IServiceRepository {
     } as ServiceWithDetails;
   }
 }
+

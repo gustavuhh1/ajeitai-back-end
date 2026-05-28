@@ -13,7 +13,7 @@ export interface ListServicesResponse {
 }
 
 export type ServiceWithDetails = Service & {
-    client: {name: string, avatar_url?: string | null}
+    client: {name: string, image?: string | null}
     budgetCount: number
 }
 

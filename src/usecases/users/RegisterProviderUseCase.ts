@@ -6,8 +6,8 @@ interface RegisterProviderRequest {
     email: string
     password?: string
     cpf: string
-    avatar_url?: string
-    phone: string
+    image?: string
+    phone?: string
     birthDate: Date
     description: string
 }
@@ -27,7 +27,7 @@ export class RegisterProviderUseCase {
             email: data.email,
             password: data.password,
             cpf: data.cpf,
-            avatar_url: data.avatar_url,
+            image: data.image,
             phone: data.phone,
             birthDate: data.birthDate,
             description: data.description,
@@ -38,3 +38,4 @@ export class RegisterProviderUseCase {
         return user
     }
 }
+

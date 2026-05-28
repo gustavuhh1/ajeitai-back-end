@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 
 export interface UserProps {
   id?: string;
-  avatar_url?: string | null;
+  image?: string | null;
   name: string;
   email: string;
   password?: string | null;
@@ -29,7 +29,7 @@ export class User {
     this.props = {
       ...props,
       id: props.id ?? randomUUID(),
-      avatar_url: props.avatar_url ?? null,
+      image: props.image ?? null,
       phone: props.phone ?? null,
       birthDate: props.birthDate ?? null,
       description: props.description ?? null,
@@ -42,8 +42,8 @@ export class User {
   get id() {
     return this.props.id;
   }
-  get avatar_url() {
-    return this.props.avatar_url;
+  get image() {
+    return this.props.image;
   }
   get avgRating() {
     return this.props.avgRating ?? new Prisma.Decimal(0);
@@ -77,3 +77,4 @@ export class User {
     this.props.avgRating = value;
   }
 }
+

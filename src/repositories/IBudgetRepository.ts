@@ -19,7 +19,8 @@ export interface BudgetWithProvider {
     id: string;
     name: string;
     description: string | null;
-    avatar_url: string | null;
+    image: string | null;
     avgRating: number;
   };
 }
+

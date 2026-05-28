@@ -52,7 +52,7 @@ model User {
   birthDate     DateTime?
   phone         String?
   role          Role     @default(CLIENT)
-  avatar_url    String?
+  image    String?
   description   String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -274,3 +274,4 @@ model ResetToken {
 
   @@map("reset_tokens")
 }
+

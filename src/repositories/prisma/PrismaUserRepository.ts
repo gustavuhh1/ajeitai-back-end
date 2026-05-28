@@ -17,6 +17,7 @@ export class PrismaUserRepository implements IUserRepository {
       id: userData.id,
       name: userData.name,
       email: userData.email,
+      image: userData.image,
       password: userData.password,
       cpf: userData.cpf,
       phone: userData.phone,
@@ -32,7 +33,7 @@ export class PrismaUserRepository implements IUserRepository {
     await auth.api.signUpEmail({
       body: {
         name: user.name,
-        image: user.avatar_url ?? undefined,
+        image: user.image ?? undefined,
         email: user.email,
         password: user.password as any,
         cpf: user.cpf,
@@ -53,3 +54,4 @@ export class PrismaUserRepository implements IUserRepository {
     });
   }
 }
+

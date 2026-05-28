@@ -87,7 +87,7 @@ export class PrismaBudgetRepository implements IBudgetRepository {
             id: true,
             name: true,
             description: true,
-            avatar_url: true,
+            image: true,
             avgRating: true,
           },
         },
@@ -105,9 +105,10 @@ export class PrismaBudgetRepository implements IBudgetRepository {
         id: item.provider.id,
         name: item.provider.name,
         description: item.provider.description,
-        avatar_url: item.provider.avatar_url,
+        image: item.provider.image,
         avgRating: Number(item.provider.avgRating),
       },
     }));
   }
 }
+

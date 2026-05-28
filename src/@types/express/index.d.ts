@@ -5,7 +5,7 @@ declare global {
         interface Request {
             user?: {
                 id: string,
-                avatar_url?: string,
+                image?: string,
                 email: string,
                 name: string,
                 cpf?: string,
