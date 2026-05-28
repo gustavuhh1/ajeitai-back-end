@@ -54,3 +54,9 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] Ambiente de testes configurado (Vitest e scripts no package.json).
 - [x] Criar repositórios "In-Memory" (`src/repositories/in-memory/`) implementando as interfaces para rodar os testes sem o Prisma.
 - [x] Criar os arquivos de testes em `src/usecases/tests/` cobrindo todos os UseCases (Usuários, Serviços, Orçamentos, Chat, Financeiro).
+
+## Fase 8: Chat em Tempo Real (WebSockets)
+- [x] Instalar o `socket.io` no backend e refatorar o `server.ts` para acoplar o servidor HTTP ao WebSocket.
+- [x] Criar estrutura de "Salas" (`Rooms`) baseadas no ID do Orçamento (`budgetId`).
+- [x] Implementar eventos de conexão, desconexão, `join_room` e emissão de mensagens (`send_message`).
+- [x] Atualizar o UseCase `SendMessageUseCase` para disparar notificações via Socket além de salvar no banco de dados.
