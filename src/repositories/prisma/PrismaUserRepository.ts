@@ -42,6 +42,7 @@ export class PrismaUserRepository implements IUserRepository {
         birthDate: user.birthDate ?? undefined,
         description: user.description ?? undefined,
       },
+      
     });
   }
 

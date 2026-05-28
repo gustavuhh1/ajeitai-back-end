@@ -1,17 +1,17 @@
-import express from 'express';
-import {router} from '@/routes';
-import swaggerUi from 'swagger-ui-express';
-import { swaggerSpec } from './utils/swagger';
+import express from "express";
+import { router } from "@/routes";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./utils/swagger";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./auth/auth";
 
-export const app = express()
+export const app = express();
 
-app.use(express.json())
+app.all("/api/auth/*", toNodeHandler(auth));
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+app.use(express.json());
 
-app.use(router)
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// app.get('/', (request, response)=> {
-//     return response.json({message: 'Olá mundo!'})
-// })
+app.use(router);
 

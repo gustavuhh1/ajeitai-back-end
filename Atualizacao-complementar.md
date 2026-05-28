@@ -40,14 +40,15 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] Recriar fluxo Financeiro e Finalização (Pagamento e Avaliação).
 
 ## Fase 5: Camada de Controllers
-- [ ] Criar Controllers enxutos para cada UseCase.
-- [ ] Implementar validação de dados com `zod` e capturar `request/response`.
-- [ ] Chamar as instâncias através das Factories criadas na Fase 4.
+- [x] Criar Controllers enxutos para cada UseCase.
+- [x] Implementar validação de dados com `zod` e capturar `request/response`.
+- [x] Chamar as instâncias através das Factories criadas na Fase 4.
 
 ## Fase 6: Camada de Rotas (Routes)
 - [ ] Limpar e refazer os arquivos de rotas em `src/routes/`.
-- [ ] Conectar os novos Controllers.
-- [ ] Aplicar os middlewares de autenticação (`ensureAuthenticated`) onde for necessário.
+- [ ] Conectar os novos Controllers nas suas respectivas rotas.
+- [ ] Integrar as rotas nativas do **better-auth** (que lidam automaticamente com o Login, Logout e Sessão da aplicação) sem precisarmos criar um `LoginController` manual.
+- [ ] Aplicar os middlewares de autenticação (`ensureAuthenticated` via better-auth) onde for necessário.
 
 ## Fase 7: Testes Unitários (In-Memory)
 - [x] Ambiente de testes configurado (Vitest e scripts no package.json).
