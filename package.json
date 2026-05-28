@@ -17,6 +17,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@abacatepay/sdk": "^1.2.0",
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.0",
     "bcryptjs": "^3.0.3",

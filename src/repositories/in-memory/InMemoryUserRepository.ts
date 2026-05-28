@@ -9,8 +9,20 @@ export class InMemoryUserRepository implements IUserRepository {
     return user || null;
   }
 
+  async findById(id: string): Promise<User | null> {
+    const user = this.items.find(u => u.id === id);
+    return user || null;
+  }
+
   async save(user: User): Promise<void> {
     this.items.push(user);
+  }
+
+  async update(user: User): Promise<void> {
+    const index = this.items.findIndex(u => u.id === user.id);
+    if (index !== -1) {
+      this.items[index] = user;
+    }
   }
 
   // fora dos teste (login via Better-auth)

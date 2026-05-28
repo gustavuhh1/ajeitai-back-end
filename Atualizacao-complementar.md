@@ -60,3 +60,11 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] Criar estrutura de "Salas" (`Rooms`) baseadas no ID do Orçamento (`budgetId`).
 - [x] Implementar eventos de conexão, desconexão, `join_room` e emissão de mensagens (`send_message`).
 - [x] Atualizar o UseCase `SendMessageUseCase` para disparar notificações via Socket além de salvar no banco de dados.
+
+## Fase 9: Integração de Pagamentos (AbacatePay)
+- [ ] Instalar o SDK oficial (`npm install @abacatepay/sdk`) e configurar as chaves no `.env`.
+- [ ] Criar fluxo de "Onboarding" para Prestadores (cadastrar conta recebedora/chave PIX no AbacatePay).
+- [ ] Atualizar o Prisma (`User` e `Payment`) para guardar IDs do AbacatePay e URLs de Checkout.
+- [ ] Refatorar o `CreatePaymentUseCase` para gerar a transação (Checkout/Pix) no AbacatePay na hora do aceite do orçamento.
+- [ ] Criar um Webhook Endpoint (`POST /webhooks/abacatepay`) para escutar quando o cliente de fato pagar, e atualizar o `status` do serviço e do pagamento no banco de dados.
+- [ ] Criar fluxo de Cancelamento de Serviço e Reembolso (`RefundPaymentUseCase`), utilizando a API do AbacatePay para estornar o valor pago caso o serviço ainda não tenha sido iniciado ou finalizado.

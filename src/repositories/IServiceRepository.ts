@@ -22,4 +22,5 @@ export interface IServiceRepository {
     findById(id: string): Promise<Service | null>
     findAllAvailable(filters: ListServicesFilters): Promise<ListServicesResponse>
     findByIdWithDetails(id:string): Promise<ServiceWithDetails | null>
+    update(service: Service): Promise<void>
 }

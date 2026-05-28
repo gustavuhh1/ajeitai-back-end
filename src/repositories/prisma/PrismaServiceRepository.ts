@@ -138,5 +138,21 @@ export class PrismaServiceRepository implements IServiceRepository {
       budgetCount: serviceData.budgets ? serviceData.budgets.length : 0,
     } as ServiceWithDetails;
   }
+
+  async update(service: Service) {
+    await prisma.service.update({
+      where: { id: service.id },
+      data: {
+        title: service.title,
+        description: service.description,
+        client_id: service.client_id,
+        status: service.status as any,
+        city: service.city,
+        latitude: service.latitude,
+        longitude: service.longitude,
+        neighborhood: service.neighborhood,
+      },
+    });
+  }
 }
 

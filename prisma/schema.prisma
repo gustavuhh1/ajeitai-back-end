@@ -57,6 +57,8 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  pixKey        String?
+
   avgRating Decimal @default(0) @db.Decimal(3, 2)
 
   adresses    Address[]
@@ -239,6 +241,7 @@ model Payment {
   amount            Decimal        @db.Decimal(10, 2)
   status            PaymentsStatus @default(PENDENTE)
   transaction_id    String?
+  checkoutUrl       String?
   confirmed_payment Boolean        @default(false)
 
   budget_id String? @unique

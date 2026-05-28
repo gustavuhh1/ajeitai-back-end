@@ -13,10 +13,24 @@ interface CreateBudgetRequest {
 export class CreateBudgetUseCase {
   constructor(
     private budgetRepository: IBudgetRepository,
-    private serviceRepository: IServiceRepository
+    private serviceRepository: IServiceRepository,
+    private userRepository: IUserRepository
   ) {}
 
   async execute(data: CreateBudgetRequest) {
+    const provider = await this.userRepository.findById(data.providerId);
+    if (!provider) {
+      throw new Error("Prestador não encontrado.");
+    }
+    
+    if (provider.role !== "PROVIDER") {
+      throw new Error("Apenas um prestador de serviço pode fazer uma proposta.");
+    }
+
+    if (!provider.pixKey) {
+      throw new Error("Você precisa configurar sua chave PIX no perfil antes de enviar orçamentos.");
+    }
+
     const service = await this.serviceRepository.findById(data.serviceId);
 
     if (!service) {

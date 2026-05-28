@@ -13,6 +13,7 @@ export interface UserProps {
   description?: string | null;
   role?: "CLIENT" | "PROVIDER" | "ADMIN";
   avgRating?: Prisma.Decimal;
+  pixKey?: string | null;
   created_at?: Date;
 }
 
@@ -35,6 +36,7 @@ export class User {
       description: props.description ?? null,
       role: props.role ?? "CLIENT",
       avgRating: props.avgRating ?? new Prisma.Decimal(0),
+      pixKey: props.pixKey ?? null,
       created_at: props.created_at ?? new Date(),
     };
   }
@@ -75,6 +77,14 @@ export class User {
 
   set avgRating(value: Prisma.Decimal) {
     this.props.avgRating = value;
+  }
+  
+  get pixKey() {
+    return this.props.pixKey;
+  }
+  
+  set pixKey(value: string | null | undefined) {
+    this.props.pixKey = value;
   }
 }
 

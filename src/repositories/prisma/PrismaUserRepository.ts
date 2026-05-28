@@ -4,6 +4,32 @@ import { auth } from "@/auth/auth";
 import { IUserRepository } from "../IUserRepository";
 
 export class PrismaUserRepository implements IUserRepository {
+  async findById(id: string): Promise<User | null> {
+    const userData = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!userData) {
+      return null;
+    }
+
+    return new User({
+      id: userData.id,
+      name: userData.name,
+      email: userData.email,
+      image: userData.image,
+      password: userData.password,
+      cpf: userData.cpf,
+      phone: userData.phone,
+      birthDate: userData.birthDate,
+      description: userData.description,
+      role: userData.role as UserRoles,
+      avgRating: userData.avgRating,
+      pixKey: userData.pixKey,
+      created_at: userData.createdAt,
+    });
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     const userData = await prisma.user.findUnique({
       where: { email },
@@ -25,6 +51,7 @@ export class PrismaUserRepository implements IUserRepository {
       description: userData.description,
       role: userData.role as UserRoles,
       avgRating: userData.avgRating,
+      pixKey: userData.pixKey,
       created_at: userData.createdAt,
     });
   }
@@ -51,6 +78,20 @@ export class PrismaUserRepository implements IUserRepository {
       body: {
         newPassword: password,
         token: token,
+      },
+    });
+  }
+
+  async update(user: User): Promise<void> {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        name: user.name,
+        image: user.image,
+        phone: user.phone,
+        birthDate: user.birthDate,
+        description: user.description,
+        pixKey: user.pixKey,
       },
     });
   }

@@ -6,6 +6,7 @@ export interface PaymentProps {
     amount: number
     status?: 'PENDENTE' | 'PAGO' | 'FALHOU' | 'REEMBOLSADO'
     transaction_id?: string | null
+    checkoutUrl?: string | null
     confirmed_payment?: boolean
     budget_id?: string | null
     client_id: string
@@ -26,6 +27,7 @@ export class Payment {
             status: props.status ?? 'PENDENTE',
             confirmed_payment: props.confirmed_payment ?? false,
             transaction_id: props.transaction_id ?? null,
+            checkoutUrl: props.checkoutUrl ?? null,
             budget_id: props.budget_id ?? null,
             createdAt: props.createdAt ?? new Date()
         }
@@ -36,6 +38,7 @@ export class Payment {
     get amount() { return this.props.amount }
     get status() { return this.props.status }
     get transaction_id() { return this.props.transaction_id }
+    get checkoutUrl() { return this.props.checkoutUrl }
     get confirmed_payment() { return this.props.confirmed_payment }
     get budget_id() { return this.props.budget_id }
     get client_id() { return this.props.client_id }
