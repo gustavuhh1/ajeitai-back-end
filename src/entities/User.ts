@@ -9,7 +9,7 @@ export interface UserProps {
   password?: string | null;
   cpf: string;
   phone?: string | null;
-  age?: number | null;
+  birthDate?: Date | null;
   description?: string | null;
   role?: "CLIENT" | "PROVIDER" | "ADMIN";
   avgRating?: Prisma.Decimal;
@@ -31,7 +31,7 @@ export class User {
       id: props.id ?? randomUUID(),
       avatar_url: props.avatar_url ?? null,
       phone: props.phone ?? null,
-      age: props.age ?? null,
+      birthDate: props.birthDate ?? null,
       description: props.description ?? null,
       role: props.role ?? "CLIENT",
       avgRating: props.avgRating ?? new Prisma.Decimal(0),
@@ -63,8 +63,8 @@ export class User {
   get phone() {
     return this.props.phone;
   }
-  get age() {
-    return this.props.age;
+  get birthDate() {
+    return this.props.birthDate;
   }
   get description() {
     return this.props.description;

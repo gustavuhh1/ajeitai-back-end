@@ -6,6 +6,7 @@ interface RegisterClientRequest {
     email: string
     password?: string
     cpf: string
+    phone?: string
 }
 
 export class RegisterClientUseCase {
@@ -23,7 +24,8 @@ export class RegisterClientUseCase {
             email: data.email,
             password: data.password,
             cpf: data.cpf,
-            role: "CLIENT"
+            role: "CLIENT",
+            phone: data.phone,
         })
 
         await this.userRepository.save(user)

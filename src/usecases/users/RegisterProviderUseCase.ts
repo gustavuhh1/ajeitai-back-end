@@ -8,7 +8,7 @@ interface RegisterProviderRequest {
     cpf: string
     avatar_url?: string
     phone: string
-    age: number
+    birthDate: Date
     description: string
 }
 
@@ -29,7 +29,7 @@ export class RegisterProviderUseCase {
             cpf: data.cpf,
             avatar_url: data.avatar_url,
             phone: data.phone,
-            age: data.age,
+            birthDate: data.birthDate,
             description: data.description,
             role: "PROVIDER"
         })

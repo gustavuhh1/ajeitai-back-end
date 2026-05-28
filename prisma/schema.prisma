@@ -49,7 +49,7 @@ model User {
   emailVerified Boolean  @default(false)
   password      String?
   cpf           String   @unique
-  age           Int?
+  birthDate     DateTime?
   phone         String?
   role          Role     @default(CLIENT)
   avatar_url    String?
