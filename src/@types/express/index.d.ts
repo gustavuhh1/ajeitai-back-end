@@ -5,11 +5,11 @@ declare global {
         interface Request {
             user?: {
                 id: string,
-                image?: string,
+                image?: string | null,
                 email: string,
                 name: string,
-                cpf?: string,
-                role?: string
+                cpf: string,
+                role: string
             }
         }
     }

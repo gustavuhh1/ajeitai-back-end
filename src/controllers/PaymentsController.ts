@@ -13,7 +13,7 @@ export class PaymentsController {
       });
 
       const data = bodySchema.parse(req.body);
-      const clientId = (req as any).user?.id || "mock-client-id";
+      const clientId = req.user!.id;
 
       const useCase = createPaymentFactory();
       const payment = await useCase.execute({
@@ -31,3 +31,4 @@ export class PaymentsController {
     }
   }
 }
+

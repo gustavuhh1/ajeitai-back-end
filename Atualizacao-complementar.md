@@ -45,10 +45,10 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] Chamar as instâncias através das Factories criadas na Fase 4.
 
 ## Fase 6: Camada de Rotas (Routes)
-- [ ] Limpar e refazer os arquivos de rotas em `src/routes/`.
-- [ ] Conectar os novos Controllers nas suas respectivas rotas.
-- [ ] Integrar as rotas nativas do **better-auth** (que lidam automaticamente com o Login, Logout e Sessão da aplicação) sem precisarmos criar um `LoginController` manual.
-- [ ] Aplicar os middlewares de autenticação (`ensureAuthenticated` via better-auth) onde for necessário.
+- [x] Limpar e refazer os arquivos de rotas em `src/routes/`.
+- [x] Conectar os novos Controllers nas suas respectivas rotas.
+- [x] Integrar as rotas nativas do **better-auth** (que lidam automaticamente com o Login, Logout e Sessão da aplicação) sem precisarmos criar um `LoginController` manual.
+- [x] Aplicar os middlewares de autenticação (`ensureAuthenticated` via better-auth) onde for necessário.
 
 ## Fase 7: Testes Unitários (In-Memory)
 - [x] Ambiente de testes configurado (Vitest e scripts no package.json).

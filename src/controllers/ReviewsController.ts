@@ -13,7 +13,7 @@ export class ReviewsController {
       });
 
       const data = bodySchema.parse(req.body);
-      const reviewerId = (req as any).user?.id || "mock-reviewer-id";
+      const reviewerId = req.user!.id;
 
       const useCase = createReviewFactory();
       const review = await useCase.execute({
@@ -31,3 +31,4 @@ export class ReviewsController {
     }
   }
 }
+

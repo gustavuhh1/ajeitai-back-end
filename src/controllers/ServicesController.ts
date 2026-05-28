@@ -22,7 +22,7 @@ export class ServicesController {
       
       // Usando o id do usuário logado (simulado até a Fase 6)
       // TODO: alterar isso para buscar o id do usuário logado
-      const clientId = (req as any).user?.id || "mock-client-id";
+      const clientId = req.user!.id;
 
       const useCase = createServiceFactory();
       const service = await useCase.execute({
@@ -85,4 +85,5 @@ export class ServicesController {
     }
   }
 }
+
 

@@ -1,12 +1,12 @@
 openapi: 3.0.0
 info:
-  title: Service Marketplace API
-  description: API para gestão de prestação de serviços, orçamentos e agendamentos.
+  title: Ajeitaí Backend API
+  description: Documentação das rotas do backend Ajeitaí (Atualizado Fase 6).
   version: 1.0.0
 
 servers:
-  - url: http://localhost:3000
-    description: Servidor de Desenvolvimento
+  - url: http://localhost:3333
+    description: Servidor Local
 
 components:
   securitySchemes:
@@ -15,112 +15,42 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
-  schemas:
-    User:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: "550e8400-e29b-41d4-a716-446655440000"
-        name:
-          type: string
-          example: "João da Silva"
-        email:
-          type: string
-          example: "joao.silva@email.com"
-        cpf:
-          type: string
-          example: "12345678901"
-        role:
-          type: string
-          enum: [CLIENT, PROVIDER, ADMIN]
-          example: "CLIENT"
-
-    Service:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
-        title:
-          type: string
-          example: "Conserto de Geladeira Brastemp"
-        description:
-          type: string
-          example: "Geladeira não está gelando a parte de baixo, apenas o congelador."
-        client_id:
-          type: string
-          format: uuid
-          example: "550e8400-e29b-41d4-a716-446655440000"
-        category_id:
-          type: string
-          format: uuid
-          example: "a39b8200-e29b-41d4-a716-446655440011"
-        city:
-          type: string
-          example: "São Paulo"
-        neighborhood:
-          type: string
-          example: "Pinheiros"
-        latitude:
-          type: number
-          nullable: true
-          example: -23.56168
-        longitude:
-          type: number
-          nullable: true
-          example: -46.656139
-
-    Budget:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        price:
-          type: number
-          example: 150.00
-        description:
-          type: string
-          example: "Troca do termostato e gás. Serviço leva cerca de 2 horas."
-        estimatedDate:
-          type: string
-          format: date-time
-          example: "2023-11-20T14:30:00Z"
-        serviceId:
-          type: string
-          format: uuid
-          example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
-        providerId:
-          type: string
-          format: uuid
-          example: "990e8400-e29b-41d4-a716-446655440099"
-        status:
-          type: string
-          enum: [PENDING, ACCEPTED, REJECTED]
-          example: "PENDING"
-
-    Booking:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: "987e6543-e21b-12d3-a456-426614174000"
-        status:
-          type: string
-          enum: [PENDING, PAID, COMPLETED, CANCELLED]
-          example: "PAID"
-
 paths:
-  # --- AUTH & USERS ---
-  /users:
+  # --- AUTENTICAÇÃO (BETTER-AUTH) ---
+  /api/auth/sign-in/email:
     post:
-      tags: [Auth & Users]
-      summary: Cadastro de novo usuário
+      tags: [Autenticação]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Sucesso (Sessão criada via cookie/token)
+  
+  /api/auth/sign-out:
+    post:
+      tags: [Autenticação]
+      summary: Logout
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Sessão encerrada
+
+  # --- USUÁRIOS ---
+  /clientes:
+    post:
+      tags: [Usuários]
+      summary: Cadastrar Cliente
       requestBody:
         required: true
         content:
@@ -130,32 +60,24 @@ paths:
               properties:
                 name:
                   type: string
-                  minLength: 3
-                  example: "Maria Oliveira"
                 email:
                   type: string
-                  example: "maria.oliveira@email.com"
+                image:
+                  type: string
                 password:
                   type: string
-                  minLength: 8
-                  example: "SenhaForte123!"
                 cpf:
                   type: string
-                  minLength: 11
-                  maxLength: 11
-                  example: "09876543210"
-                role:
+                phone:
                   type: string
-                  enum: [CLIENT, PROVIDER, ADMIN]
-                  example: "PROVIDER"
       responses:
-        '201':
-          description: Usuário criado.
+        "201":
+          description: Cliente cadastrado com sucesso
 
-  /sessions:
+  /prestadores:
     post:
-      tags: [Auth & Users]
-      summary: Login (Gera Token)
+      tags: [Usuários]
+      summary: Cadastrar Prestador
       requestBody:
         required: true
         content:
@@ -163,95 +85,58 @@ paths:
             schema:
               type: object
               properties:
+                name:
+                  type: string
                 email:
                   type: string
-                  example: "maria.oliveira@email.com"
                 password:
                   type: string
-                  example: "SenhaForte123!"
-      responses:
-        '200':
-          description: Login realizado com sucesso.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  token:
-                    type: string
-                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                  user: { $ref: '#/components/schemas/User' }
-
-  /auth/forgot-password:
-    post:
-      tags: [Auth & Users]
-      summary: Solicitar recuperação de senha
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
+                cpf:
                   type: string
-                  example: "maria.oliveira@email.com"
-      responses:
-        '200':
-          description: E-mail de recuperação enviado.
-
-  /auth/reset-password:
-    post:
-      tags: [Auth & Users]
-      summary: Redefinir senha com token
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                token:
+                image:
                   type: string
-                  example: "abc123xyz456"
-                password:
+                phone:
                   type: string
-                  example: "NovaSenhaSegura456!"
+                birthDate:
+                  type: string
+                  format: date-time
+                description:
+                  type: string
+                  minLength: 100
       responses:
-        '200':
-          description: Senha alterada com sucesso.
+        "201":
+          description: Prestador cadastrado com sucesso
 
-  /me:
+  # --- SERVIÇOS ---
+  /servicos:
     get:
-      tags: [Auth & Users]
-      summary: Ver perfil do usuário logado
-      security:
-        - bearerAuth: []
+      tags: [Serviços]
+      summary: Listar Serviços Disponíveis
+      parameters:
+        - name: categoryId
+          in: query
+          schema:
+            type: string
+        - name: city
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: number
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: number
+            default: 10
       responses:
-        '200':
-          description: Dados do perfil.
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/User' }
-
-  # --- SERVICES ---
-  /services:
-    get:
-      tags: [Services]
-      summary: Listar serviços disponíveis
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Lista de serviços.
-          content:
-            application/json:
-              schema:
-                type: array
-                items: { $ref: '#/components/schemas/Service' }
+        "200":
+          description: Lista de serviços
     post:
-      tags: [Services]
-      summary: Criar novo serviço (Apenas Clientes)
+      tags: [Serviços]
+      summary: Criar novo serviço
       security:
         - bearerAuth: []
       requestBody:
@@ -263,69 +148,87 @@ paths:
               properties:
                 title:
                   type: string
-                  example: "Instalação de Ar Condicionado"
                 description:
                   type: string
-                  example: "Preciso instalar um split de 12000 BTUs no quarto."
-                category_id:
-                  type: string
-                  format: uuid
-                  example: "a39b8200-e29b-41d4-a716-446655440011"
+                images_url:
+                  type: array
+                  items:
+                    type: string
+                categoryIds:
+                  type: array
+                  items:
+                    type: string
                 city:
                   type: string
-                  example: "Rio de Janeiro"
                 neighborhood:
                   type: string
-                  example: "Copacabana"
                 latitude:
                   type: number
-                  example: -22.9711
                 longitude:
                   type: number
-                  example: -43.1822
       responses:
-        '201':
-          description: Serviço criado.
+        "201":
+          description: Serviço criado
 
-  /services/{id}:
+  /servicos/{id}:
     get:
-      tags: [Services]
-      summary: Obter detalhes de um serviço (Público)
+      tags: [Serviços]
+      summary: Detalhes de um serviço específico
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: string
-            format: uuid
-            example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
       responses:
-        '200':
-          description: Detalhes do serviço.
+        "200":
+          description: Dados do serviço
 
-  # --- BUDGETS ---
-  /services/{id}/budget:
+  # --- ORÇAMENTOS ---
+  /orcamentos:
     get:
-      tags: [Budgets]
-      summary: Ver orçamento atual de um serviço
+      tags: [Orçamentos]
+      summary: Listar orçamentos de um serviço
       security:
         - bearerAuth: []
       parameters:
-        - name: id
-          in: path
+        - name: serviceId
+          in: query
           required: true
           schema:
             type: string
-            format: uuid
-            example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
       responses:
-        '200':
-          description: Dados do orçamento.
-
-  /services/{id}/budgets:
+        "200":
+          description: Lista de orçamentos
     post:
-      tags: [Budgets]
-      summary: Enviar proposta de orçamento para um serviço (Apenas Prestadores)
+      tags: [Orçamentos]
+      summary: Enviar novo orçamento
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                serviceId:
+                  type: string
+                price:
+                  type: number
+                description:
+                  type: string
+                estimatedDate:
+                  type: string
+                  format: date-time
+      responses:
+        "201":
+          description: Orçamento enviado
+
+  /orcamentos/{id}/contra-proposta:
+    patch:
+      tags: [Orçamentos]
+      summary: Enviar contra-proposta
       security:
         - bearerAuth: []
       parameters:
@@ -334,9 +237,8 @@ paths:
           required: true
           schema:
             type: string
-            format: uuid
-            example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -344,139 +246,113 @@ paths:
               properties:
                 price:
                   type: number
-                  example: 350.00
                 description:
                   type: string
-                  example: "Inclui material e mão de obra para a instalação."
                 estimatedDate:
                   type: string
                   format: date-time
-                  example: "2023-11-25T09:00:00Z"
       responses:
-        '201':
-          description: Orçamento enviado.
+        "200":
+          description: Contra-proposta enviada
 
-  # --- CLIENT ACTIONS ---
-  /client/services/{serviceId}/budgets/{budgetId}/accept:
+  /orcamentos/{id}/aceitar:
     patch:
-      tags: [Client]
-      summary: Aceitar um orçamento (Apenas Clientes)
+      tags: [Orçamentos]
+      summary: Cliente aceita o orçamento
       security:
         - bearerAuth: []
       parameters:
-        - name: serviceId
+        - name: id
           in: path
           required: true
           schema:
             type: string
-            format: uuid
-            example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+      responses:
+        "200":
+          description: Orçamento aceito
+
+  # --- MENSAGENS ---
+  /mensagens:
+    post:
+      tags: [Mensagens]
+      summary: Enviar mensagem no chat
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                budgetId:
+                  type: string
+                text:
+                  type: string
+                imageUrl:
+                  type: string
+      responses:
+        "201":
+          description: Mensagem enviada
+
+  /mensagens/{budgetId}:
+    get:
+      tags: [Mensagens]
+      summary: Listar mensagens do chat
+      security:
+        - bearerAuth: []
+      parameters:
         - name: budgetId
           in: path
           required: true
           schema:
             type: string
-            format: uuid
-            example: "123e4567-e89b-12d3-a456-426614174000"
       responses:
-        '200':
-          description: Orçamento aceito e reserva gerada.
+        "200":
+          description: Lista de mensagens
 
-  /client/bookings/{id}/payment:
+  # --- PAGAMENTOS ---
+  /pagamentos:
     post:
-      tags: [Client]
-      summary: Realizar pagamento de uma reserva
+      tags: [Pagamentos]
+      summary: Realizar pagamento
       security:
         - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-            example: "987e6543-e21b-12d3-a456-426614174000"
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                amount:
-                  type: number
-                  example: 350.00
+                budgetId:
+                  type: string
                 method:
                   type: string
-                  example: "CREDIT_CARD"
       responses:
-        '201':
-          description: Pagamento processado.
+        "201":
+          description: Pagamento realizado
 
-  # --- PROVIDER ACTIONS ---
-  /provider/bookings:
-    get:
-      tags: [Provider]
-      summary: Listar agendamentos recebidos (Apenas Prestadores)
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Lista de agendamentos.
-
-  /bookings/{id}/status:
-    patch:
-      tags: [Provider]
-      summary: Atualizar status de um agendamento (Apenas Prestadores)
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-            example: "987e6543-e21b-12d3-a456-426614174000"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                status:
-                  type: string
-                  enum: [COMPLETED, CANCELLED]
-                  example: "COMPLETED"
-      responses:
-        '200':
-          description: Status atualizado.
-
-  # --- REVIEWS ---
-  /reviews:
+  # --- AVALIAÇÕES ---
+  /avaliacoes:
     post:
-      tags: [Client]
-      summary: Criar avaliação de um serviço finalizado (Apenas Clientes)
+      tags: [Avaliações]
+      summary: Enviar avaliação
       security:
         - bearerAuth: []
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                bookingId:
+                serviceId:
                   type: string
-                  format: uuid
-                  example: "987e6543-e21b-12d3-a456-426614174000"
                 rating:
-                  type: integer
-                  minimum: 1
-                  maximum: 5
-                  example: 5
+                  type: number
                 comment:
                   type: string
-                  maxLength: 500
-                  example: "Serviço excelente e muito rápido!"
       responses:
-        '201':
-          description: Avaliação enviada.
+        "201":
+          description: Avaliação salva

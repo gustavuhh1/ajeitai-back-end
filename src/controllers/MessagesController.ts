@@ -13,7 +13,7 @@ export class MessagesController {
       });
 
       const data = bodySchema.parse(req.body);
-      const senderId = (req as any).user?.id || "mock-sender-id";
+      const senderId = req.user!.id;
 
       const useCase = sendMessageFactory();
       const message = await useCase.execute({
@@ -32,6 +32,9 @@ export class MessagesController {
   }
 
   async list(req: Request, res: Response): Promise<void> {
+    /*  #swagger.tags = ['Mensagens']
+        #swagger.description = 'Lista todas as mensagens trocadas em um determinado orçamento.'
+    */
     try {
       const paramsSchema = z.object({ budgetId: z.uuid() });
       const { budgetId } = paramsSchema.parse(req.params);
@@ -49,3 +52,4 @@ export class MessagesController {
     }
   }
 }
+

@@ -16,7 +16,7 @@ export class BudgetsController {
       });
 
       const data = createBodySchema.parse(req.body);
-      const providerId = (req as any).user?.id || "mock-provider-id";
+      const providerId = req.user!.id;
 
       const useCase = createBudgetFactory();
       const budget = await useCase.execute({
@@ -102,4 +102,5 @@ export class BudgetsController {
     }
   }
 }
+
 

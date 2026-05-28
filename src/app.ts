@@ -7,7 +7,7 @@ import { auth } from "./auth/auth";
 
 export const app = express();
 
-app.all("/api/auth/*", toNodeHandler(auth));
+app.all("/api/auth/*path", toNodeHandler(auth));
 
 app.use(express.json());
 

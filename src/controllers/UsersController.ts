@@ -9,6 +9,7 @@ export class UsersController {
       const registerBodySchema = z.object({
         name: z.string(),
         email: z.email(),
+        image: z.string().optional(),
         password: z.string().optional(),
         phone: z.string().optional(),
         cpf: z.string(),
