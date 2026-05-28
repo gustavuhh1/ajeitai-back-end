@@ -6,6 +6,7 @@ export interface ReviewProps {
     comment?: string | null
     serviceId: string
     reviewerId: string
+    reviewedId: string
     createdAt?: Date
 }
 
@@ -30,5 +31,6 @@ export class Review {
     get comment() { return this.props.comment }
     get serviceId() { return this.props.serviceId }
     get reviewerId() { return this.props.reviewerId }
+    get reviewedId() { return this.props.reviewedId }
     get createdAt() { return this.props.createdAt }
 }

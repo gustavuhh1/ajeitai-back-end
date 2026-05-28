@@ -15,8 +15,11 @@ export interface ServiceProps {
   categoryIds: string[];
   client_id: string;
   provider_id?: string | null;
-  start_date?: Date | null;
-  end_date?: Date | null;
+  start_date?: Date | null; // Prestador deu inicio ao servico 
+  end_date?: Date | null; // Prestador finalizou o servico
+
+  createdAt?: Date;
+  updatedAt?: Date;
 
   latitude?: number | null;
   longitude?: number | null;
@@ -55,6 +58,8 @@ export class Service {
       latitude: props.latitude ?? null,
       longitude: props.longitude ?? null,
       neighborhood: props.neighborhood ?? null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
   }
 
@@ -101,6 +106,12 @@ export class Service {
   }
   get neighborhood() {
     return this.props.neighborhood;
+  }
+  get createdAt() {
+    return this.props.createdAt;
+  }
+  get updatedAt() {
+    return this.props.updatedAt;
   }
 
   // Domain Methods

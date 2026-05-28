@@ -180,6 +180,9 @@ model Service {
   city         String
   neighborhood String?
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   categories Category[]
 
   client_id String
