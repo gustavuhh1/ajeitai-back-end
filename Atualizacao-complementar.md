@@ -61,10 +61,77 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] Implementar eventos de conexão, desconexão, `join_room` e emissão de mensagens (`send_message`).
 - [x] Atualizar o UseCase `SendMessageUseCase` para disparar notificações via Socket além de salvar no banco de dados.
 
-## Fase 9: Abacate pay (GATEWAY PAGAMENTO)
+## Fase 9: Integração de Pagamentos (AbacatePay)
+- [ ] Instalar o SDK oficial (`npm install @abacatepay/sdk`) e configurar as chaves no `.env`.
+- [ ] Criar fluxo de "Onboarding" para Prestadores (cadastrar conta recebedora/chave PIX no AbacatePay).
+- [ ] Atualizar o Prisma (`User` e `Payment`) para guardar IDs do AbacatePay e URLs de Checkout.
+- [ ] Refatorar o `CreatePaymentUseCase` para gerar a transação (Checkout/Pix) no AbacatePay na hora do aceite do orçamento.
+- [ ] Criar um Webhook Endpoint (`POST /webhooks/abacatepay`) para escutar quando o cliente de fato pagar, e atualizar o `status` do serviço e do pagamento no banco de dados.
+- [ ] Criar fluxo de Cancelamento de Serviço e Reembolso (`RefundPaymentUseCase`), utilizando a API do AbacatePay para estornar o valor pago caso o serviço ainda não tenha sido iniciado ou finalizado.
 
 ## Fase 10: Deploy e Preparação do Ambiente
 - [x] Substituir o compilador padrão `tsc` pelo `tsup` para melhor performance e resolução de *path aliases* (`@/`).
 - [x] Atualizar o script de `"build"` no `package.json` para utilizar `tsup src/server.ts --format cjs --clean`.
 - [x] Validar e configurar o script de `"start"` para rodar a versão compilada (`node dist/server.js`).
 - [x] Instalar dependência de desenvolvimento do tsup (`npm install tsup -D`).
+
+## Fase 11: Refatoração de Endereços (Address)
+- [ ] Atualizar o model `Address`:
+  - Mudar os atributos para Português (Pt-br): `rua`, `numero`, `ponto_de_referencia`, `cep`, `complemento`, `cidade`, `estado`.
+  - Adicionar os campos `latitude` e `longitude` (transferidos de Service para Address).
+  - Adicionar o campo booleano `principal` para definir o endereço principal.
+  - Remover o campo `type`.
+  - Tornar o campo `complemento` o único opcional.
+- [ ] Adaptar o fluxo de Criação de Endereço (API): O frontend será o responsável por consumir a API de Geocoding/CEP (para autocompletar e pegar as coordenadas), enviando a `latitude` e `longitude` já prontas no *body* da requisição. O back-end apenas validará e salvará.
+- [ ] Atualizar o model `Service`:
+  - Remover os campos `latitude`, `longitude`, `city` e `neighborhood`.
+  - Adicionar relação com `Address` (um serviço possui 1 endereço, um endereço pode ser usado em vários serviços).
+- [ ] Atualizar a lógica de Usuários (Clientes e Prestadores):
+  - Permitir cadastro de múltiplos endereços (maximo 5 endereços por usuario) (casa, trabalho, etc) tendo uma relação de 1-N.
+  - Permitir a seleção do endereço no momento da criação do serviço.
+- [ ] Atualizar o model `Payment` e fluxo de pagamento (se necessário):
+  - Garantir que a informação de endereço esteja disponível durante as transações.
+- [ ] Refatorar Repositórios, UseCases e Controllers afetados pelas mudanças no endereço.
+
+## Fase 12: Funcionalidades Complementares (Integração Front-end)
+- [ ] **Listagem de Serviços do Cliente:**
+  - Criar Rota/UseCase/Repositório para buscar todos os serviços criados pelo usuário autenticado (Cliente).
+  - Ordenar os resultados por `updatedAt` (dos mais recentes para os mais antigos).
+- [ ] **Atualização de Perfil (Usuário):**
+  - Criar rota `PATCH` para atualizar informações mutáveis do usuário (`telefone`, `nome`, `descrição`, `image`).
+  - O endpoint deve aceitar *body* parcial, atualizando apenas os campos que forem enviados.
+- [ ] **Redefinição de Senha (Logado):**
+  - Criar Rota/UseCase para alterar a senha fornecendo `senhaAntiga` e `senhaNova`, utilizando os recursos do `better-auth`.
+- [ ] **Recuperação de Senha (Esqueci minha senha):**
+  - Implementar Rota/UseCase para enviar e-mail com link de recuperação.
+  - Integrar o serviço terceirizado **Resend** para realizar o disparo real e seguro dos e-mails aos usuários.
+  - O front-end validará a URL e o back-end processará a redefinição utilizando as funções do `better-auth`.
+- [ ] **Edição de Serviço:**
+  - Criar rota `PATCH` para alteração de informações do serviço (`images_url`, `description`, `title`, `endereço`).
+  - Garantir que apenas o Cliente autor do serviço possa realizar a alteração.
+  - O endpoint deve aceitar atualizações parciais.
+- [ ] **Exclusão de Serviço:**
+  - Criar Rota/UseCase para o cliente excluir um serviço permanentemente.
+  - **Regra de Negócio:** A exclusão só será permitida se o `StatusService` estiver como `ABERTO`.
+  - Realizar exclusão em cascata: excluir também os orçamentos (budgets) que estiverem em aberto atrelados ao serviço.
+- [ ] **Regra de Prazo para Avaliação (Review):**
+  - Atualizar o UseCase de avaliações para checar a data de finalização.
+  - Se o serviço foi `FINALIZADO` há mais de 2 dias, o sistema deve impossibilitar o usuário de enviar uma avaliação.
+
+## Fase 13: Central de Notificações em Tempo Real (Socket.IO + Prisma)
+- [ ] **Modelagem (Prisma):**
+  - Criar o model `Notification` no `schema.prisma`.
+  - Definir campos: `id`, `userId` (relação com User), `title`, `message`, `type` (ex: NEW_QUOTE, NEW_MESSAGE, STATUS_CHANGE, SERVICE_DELETED), `isRead` (default: false), `link` (opcional), `createdAt`.
+- [ ] **Infraestrutura em Tempo Real (Express):**
+  - Instalar e configurar o `socket.io` junto ao servidor HTTP (`server.ts`).
+  - Criar middleware de autenticação para as conexões do socket, garantindo que apenas usuários autenticados conectem.
+  - Implementar lógica para cada usuário ingressar em uma "sala" (room) própria baseada no seu ID.
+- [ ] **Rotas REST (Sincronização do Front-end):**
+  - `GET /api/notifications`: Buscar o histórico de notificações do usuário (ordenado do mais recente para o mais antigo).
+  - `PATCH /api/notifications/mark-as-read`: Marcar notificações selecionadas (ou todas) como lidas.
+- [ ] **Emissão de Eventos (Casos de Uso):**
+  - Interceptar as ações principais e disparar notificações (Salvar no Prisma + Emitir via Socket.IO):
+    - Novo orçamento recebido (Cliente notificado).
+    - Novas mensagens recebidas na negociação (Ambos).
+    - Status do orçamento/serviço alterado (contra-proposta, aceito, pago, finalizado) (Ambos).
+    - Serviço excluído (Prestadores notificados).
