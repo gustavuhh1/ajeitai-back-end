@@ -1,5 +1,5 @@
-import { Prisma, Payment } from "@prisma/client";
+import { Payment } from "@/entities/Payment";
 
 export interface IPaymentRepository {
-    create(data: Prisma.PaymentUncheckedCreateInput): Promise<Payment>
+    create(payment: Payment): Promise<void>
 }

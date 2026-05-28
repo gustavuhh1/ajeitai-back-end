@@ -10,6 +10,6 @@ export function ensureRole(role: 'CLIENT' | 'PROVIDER' | 'ADMIN') {
             })
         }
 
-        return next
+        return next();
     }
 }

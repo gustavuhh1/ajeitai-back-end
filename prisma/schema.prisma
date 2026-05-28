@@ -19,31 +19,27 @@ enum Role {
 }
 
 enum StatusService {
-  IN_NEGOTIATION
-  UNDER_ANALYSIS
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-  CANCELED
-}
-
-enum BookingStatus {
-  SCHEDULED
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
+  ABERTO
+  AGUARDANDO_PAGAMENTO
+  APROVADO
+  EM_ANDAMENTO
+  FINALIZADO
+  CANCELADO
 }
 
 enum PaymentsStatus {
-  PENDING
-  PAID
-  FAILED
+  PENDENTE
+  PAGO
+  FALHOU
+  REEMBOLSADO
 }
 
 enum BudgetStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
+  AGUARDANDO_CLIENTE
+  AGUARDANDO_PRESTADOR
+  ACEITO
+  PAGO
+  RECUSADO
 }
 
 model User {
@@ -53,10 +49,10 @@ model User {
   emailVerified Boolean  @default(false)
   password      String?
   cpf           String   @unique
-  age           Int?
+  birthDate     DateTime?
   phone         String?
   role          Role     @default(CLIENT)
-  avatar_url    String?
+  image    String?
   description   String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -75,9 +71,8 @@ model User {
 
   client_services   Service[] @relation("ClientServices")
   provider_services Service[] @relation("ProviderServices")
-  client_bookings   Booking[] @relation("ClientBookings")
-  provider_bookings Booking[] @relation("ProviderBookings")
   budgets           Budget[]
+  messages          Message[]
 
   @@map("users")
 }
@@ -88,8 +83,8 @@ model Review {
   comment   String?
   createdAt DateTime @default(now())
 
-  bookingId String  @unique
-  booking   Booking @relation(fields: [bookingId], references: [id])
+  serviceId String  @unique
+  service   Service @relation(fields: [serviceId], references: [id])
 
   //Quem avalia (Cliente)
   reviewerId String
@@ -174,8 +169,9 @@ model Category {
 model Service {
   id          String        @id @default(uuid())
   title       String
+  images_url  String[]      @default([])
   description String
-  status      StatusService @default(UNDER_ANALYSIS)
+  status      StatusService @default(ABERTO)
   start_date  DateTime?
   end_date    DateTime?
 
@@ -184,8 +180,10 @@ model Service {
   city         String
   neighborhood String?
 
-  category_id String
-  category    Category @relation(fields: [category_id], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  categories Category[]
 
   client_id String
   client    User   @relation("ClientServices", fields: [client_id], references: [id])
@@ -193,37 +191,11 @@ model Service {
   provider_id String?
   provider    User?   @relation("ProviderServices", fields: [provider_id], references: [id])
 
-  budgets  Budget[]
-  ratings  Rating[]
-  bookings Booking[]
-
-  @@map("services")
-}
-
-model Booking {
-  id         String        @id @default(uuid())
-  scheduleAt DateTime
-  status     BookingStatus @default(SCHEDULED)
-
-  service_id String
-  service    Service @relation(fields: [service_id], references: [id])
-
-  client_id String
-  client    User   @relation("ClientBookings", fields: [client_id], references: [id])
-
-  provider_id String
-  provider    User   @relation("ProviderBookings", fields: [provider_id], references: [id])
-
-  budget_id String @unique
-  budget    Budget @relation(fields: [budget_id], references: [id])
-
-  payment Payment?
+  budgets Budget[]
+  ratings Rating[]
   review  Review?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("bookings")
+  @@map("services")
 }
 
 model Rating {
@@ -245,7 +217,7 @@ model Budget {
   price         Decimal      @db.Decimal(10, 2)
   description   String
   estimatedDate DateTime
-  status        BudgetStatus @default(PENDING)
+  status        BudgetStatus @default(AGUARDANDO_CLIENTE)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
@@ -255,7 +227,8 @@ model Budget {
   providerId String
   provider   User   @relation(fields: [providerId], references: [id])
 
-  booking Booking?
+  payment  Payment?
+  messages Message[]
 
   @@map("budgets")
 }
@@ -264,12 +237,12 @@ model Payment {
   id                String         @id @default(uuid())
   method            String
   amount            Decimal        @db.Decimal(10, 2)
-  status            PaymentsStatus @default(PENDING)
+  status            PaymentsStatus @default(PENDENTE)
   transaction_id    String?
   confirmed_payment Boolean        @default(false)
 
-  booking_id String?  @unique
-  booking    Booking? @relation(fields: [booking_id], references: [id])
+  budget_id String? @unique
+  budget    Budget? @relation(fields: [budget_id], references: [id])
 
   client_id String
   client    User   @relation(fields: [client_id], references: [id])
@@ -277,6 +250,21 @@ model Payment {
   createdAt DateTime @default(now())
 
   @@map("payments")
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  text      String?
+  imageUrl  String?
+  createdAt DateTime @default(now())
+
+  senderId String
+  sender   User   @relation(fields: [senderId], references: [id])
+
+  budgetId String
+  budget   Budget @relation(fields: [budgetId], references: [id])
+
+  @@map("messages")
 }
 
 model ResetToken {
@@ -289,3 +277,4 @@ model ResetToken {
 
   @@map("reset_tokens")
 }
+

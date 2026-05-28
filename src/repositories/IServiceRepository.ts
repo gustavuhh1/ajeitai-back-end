@@ -1,7 +1,7 @@
 import { Service } from "@/entities/Service";
 
 export interface ListServicesFilters {
-    category_id?: string
+    categoryId?: string
     city?: string
     page: number
     limit: number
@@ -13,7 +13,7 @@ export interface ListServicesResponse {
 }
 
 export type ServiceWithDetails = Service & {
-    client: {name: string, avatar_url?: string | null}
+    client: {name: string, image?: string | null}
     budgetCount: number
 }
 
