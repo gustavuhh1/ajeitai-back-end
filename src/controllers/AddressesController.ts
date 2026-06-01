@@ -4,6 +4,7 @@ import { createAddressFactory } from "@/usecases/factories/createAddressFactory"
 import { listUserAddressesFactory } from "@/usecases/factories/listUserAddressesFactory";
 import { deleteAddressFactory } from "@/usecases/factories/deleteAddressFactory";
 import { togglePrincipalAddressFactory } from "@/usecases/factories/togglePrincipalAddressFactory";
+import { getAddressByIdFactory } from "@/usecases/factories/getAddressByIdFactory";
 
 export class AddressesController {
   async create(req: Request, res: Response): Promise<void> {
@@ -52,10 +53,32 @@ export class AddressesController {
     }
   }
 
+  async getById(req: Request, res: Response): Promise<void> {
+    try {
+      const getParamsSchema = z.object({
+        id: z.uuid(),
+      });
+
+      const { id } = getParamsSchema.parse(req.params);
+      const userId = req.user!.id;
+
+      const useCase = getAddressByIdFactory();
+      const address = await useCase.execute(id, userId);
+
+      res.status(200).json(address);
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ errors: error.issues });
+      } else {
+        res.status(400).json({ error: error.message });
+      }
+    }
+  }
+
   async delete(req: Request, res: Response): Promise<void> {
     try {
       const deleteParamsSchema = z.object({
-        id: z.string().uuid(),
+        id: z.uuid(),
       });
 
       const { id } = deleteParamsSchema.parse(req.params);
