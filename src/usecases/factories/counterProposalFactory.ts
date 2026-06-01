@@ -1,8 +1,10 @@
 import { PrismaBudgetRepository } from "@/repositories/prisma/PrismaBudgetRepository";
+import { PrismaServiceRepository } from "@/repositories/prisma/PrismaServiceRepository";
 import { CounterProposalUseCase } from "../budgets/CounterProposalUseCase";
 
 export function counterProposalFactory() {
   const budgetRepository = new PrismaBudgetRepository();
-  return new CounterProposalUseCase(budgetRepository);
+  const serviceRepository = new PrismaServiceRepository();
+  return new CounterProposalUseCase(budgetRepository, serviceRepository);
 }
 

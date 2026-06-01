@@ -1,18 +1,31 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { AcceptBudgetUseCase } from '../../budgets/AcceptBudgetUseCase';
 import { InMemoryBudgetRepository } from '../../../repositories/in-memory/InMemoryBudgetRepository';
+import { InMemoryServiceRepository } from '../../../repositories/in-memory/InMemoryServiceRepository';
 import { Budget } from '../../../entities/Budget';
+import { Service } from '../../../entities/Service';
 
 describe('AcceptBudgetUseCase', () => {
   let inMemoryBudgetRepository: InMemoryBudgetRepository;
+  let inMemoryServiceRepository: InMemoryServiceRepository;
   let sut: AcceptBudgetUseCase;
 
   beforeEach(() => {
     inMemoryBudgetRepository = new InMemoryBudgetRepository();
-    sut = new AcceptBudgetUseCase(inMemoryBudgetRepository);
+    inMemoryServiceRepository = new InMemoryServiceRepository();
+    sut = new AcceptBudgetUseCase(inMemoryBudgetRepository, inMemoryServiceRepository);
   });
 
   it('deve ser possível aceitar um orçamento e rejeitar os demais do mesmo serviço', async () => {
+    inMemoryServiceRepository.items.push(new Service({
+      id: 'service-1',
+      client_id: 'client-1',
+      title: 'Service 1',
+      description: 'Desc',
+      address_id: 'addr-1',
+      categoryIds: ['cat-1']
+    }));
+
     inMemoryBudgetRepository.items.push(new Budget({
       id: 'budget-1',
       serviceId: 'service-1',
@@ -35,7 +48,7 @@ describe('AcceptBudgetUseCase', () => {
 
     const acceptedBudget = await sut.execute({
       budgetId: 'budget-1',
-      serviceId: 'service-1',
+      userId: 'client-1',
       isFromClient: true
     });
 
@@ -48,7 +61,7 @@ describe('AcceptBudgetUseCase', () => {
     await expect(() =>
       sut.execute({
         budgetId: 'non-existent',
-        serviceId: 'service-1',
+        userId: 'client-1',
         isFromClient: true
       })
     ).rejects.toThrow('Orçamento não encontrado');
