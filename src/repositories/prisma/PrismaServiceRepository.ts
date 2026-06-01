@@ -187,5 +187,22 @@ export class PrismaServiceRepository implements IServiceRepository {
       },
     });
   }
+
+  async delete(id: string): Promise<void> {
+    await prisma.$transaction(async (tx) => {
+      // TODO: Futuramente, implementar aqui (ou disparar um evento) a lógica de notificação:
+      // Recuperar os orçamentos (budgets) atrelados a este serviço e notificar 
+      // todos os prestadores (providerId) que enviaram um orçamento de que o 
+      // serviço "*titulo do serviço*" foi excluído pelo usuário.
+
+      await tx.budget.deleteMany({
+        where: { serviceId: id },
+      });
+
+      await tx.service.delete({
+        where: { id },
+      });
+    });
+  }
 }
 

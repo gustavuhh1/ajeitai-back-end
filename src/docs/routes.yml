@@ -244,14 +244,9 @@ paths:
                   type: array
                   items:
                     type: string
-                city:
+                address_id:
                   type: string
-                neighborhood:
-                  type: string
-                latitude:
-                  type: number
-                longitude:
-                  type: number
+                  format: uuid
       responses:
         "201":
           description: Serviço criado
@@ -310,7 +305,20 @@ paths:
       responses:
         "200":
           description: Serviço atualizado com sucesso
-
+    delete:
+      tags: [Serviços]
+      summary: Excluir um serviço permanentemente
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Serviço excluído com sucesso
 
   # --- ORÇAMENTOS ---
   /orcamentos/{serviceId}:

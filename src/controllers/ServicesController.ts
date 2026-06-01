@@ -131,4 +131,33 @@ export class ServicesController {
       }
     }
   }
+
+  async delete(req: Request, res: Response): Promise<void> {
+    try {
+      const getRequestParams = z.object({
+        id: z.uuid(),
+      });
+
+      const { id: serviceId } = getRequestParams.parse(req.params);
+      const userId = req.user!.id;
+
+      const {
+        deleteServiceFactory,
+      } = require("@/usecases/services/factories/deleteServiceFactory");
+      const useCase = deleteServiceFactory();
+
+      await useCase.execute({
+        userId,
+        serviceId,
+      });
+
+      res.status(200).json({ message: "Serviço excluído com sucesso" });
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ errors: error.message });
+      } else {
+        res.status(400).json({ error: error.message });
+      }
+    }
+  }
 }

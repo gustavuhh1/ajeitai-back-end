@@ -40,7 +40,7 @@ export class InMemoryServiceRepository implements IServiceRepository {
     if (filters.city) {
       if (this.addressRepository) {
         filtered = filtered.filter((s) => {
-          const addr = this.addressRepository!.items.find(a => a.id === s.address_id);
+          const addr = this.addressRepository!.items.find((a) => a.id === s.address_id);
           return addr?.cidade.toLowerCase() === filters.city!.toLowerCase();
         });
       }
@@ -64,7 +64,7 @@ export class InMemoryServiceRepository implements IServiceRepository {
       })
       .map((s) => {
         return Object.assign(s, {
-          categories: s.categoryIds.map(id => ({ id, name: "Categoria Mock" }))
+          categories: s.categoryIds.map((id) => ({ id, name: "Categoria Mock" })),
         }) as ServiceWithCategories;
       });
   }
@@ -86,7 +86,14 @@ export class InMemoryServiceRepository implements IServiceRepository {
       ).length;
     }
 
-    let addressInfo = { rua: "", numero: "", cidade: "", estado: "", latitude: 0, longitude: 0 };
+    let addressInfo = {
+      rua: "",
+      numero: "",
+      cidade: "",
+      estado: "",
+      latitude: 0,
+      longitude: 0,
+    };
     if (this.addressRepository) {
       const addr = this.addressRepository.items.find((a) => a.id === service.address_id);
       if (addr) {
@@ -119,28 +126,38 @@ export class InMemoryServiceRepository implements IServiceRepository {
   }
 
   async countByAddressId(addressId: string): Promise<number> {
-    return this.items.filter(s => s.address_id === addressId).length;
+    return this.items.filter((s) => s.address_id === addressId).length;
   }
 
   async update(id: string, data: Partial<Service>): Promise<void> {
-    const serviceIndex = this.items.findIndex(s => s.id === id);
+    const serviceIndex = this.items.findIndex((s) => s.id === id);
     if (serviceIndex >= 0) {
       const s = this.items[serviceIndex];
       this.items[serviceIndex] = new Service({
-        id: s.id,
-        title: data.title ?? s.title,
-        description: data.description ?? s.description,
-        images_url: data.images_url ?? s.images_url,
-        address_id: data.address_id ?? s.address_id,
-        status: s.status,
-        categoryIds: s.categoryIds,
-        client_id: s.client_id,
-        provider_id: s.provider_id,
-        start_date: s.start_date,
-        end_date: s.end_date,
-        createdAt: s.createdAt,
+        id: s!.id,
+        title: data.title ?? s!.title,
+        description: data.description ?? s!.description,
+        images_url: data.images_url ?? s!.images_url,
+        address_id: data.address_id ?? s!.address_id,
+        status: s!.status,
+        categoryIds: s!.categoryIds,
+        client_id: s!.client_id,
+        provider_id: s!.provider_id,
+        start_date: s!.start_date,
+        end_date: s!.end_date,
+        createdAt: s!.createdAt,
         updatedAt: new Date(),
       });
+    }
+  }
+
+  async delete(id: string): Promise<void> {
+    this.items = this.items.filter((s) => s.id !== id);
+
+    if (this.budgetRepository) {
+      this.budgetRepository.items = this.budgetRepository.items.filter(
+        (b) => b.serviceId !== id,
+      );
     }
   }
 }

@@ -121,7 +121,7 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
   - Criar rota `PATCH` para alteração de informações do serviço (`images_url`, `description`, `title`, `endereço`).
   - Garantir que apenas o Cliente autor do serviço possa realizar a alteração.
   - O endpoint deve aceitar atualizações parciais.
-- [ ] **Exclusão de Serviço:**
+- [x] **Exclusão de Serviço:**
   - Criar Rota/UseCase para o cliente excluir um serviço permanentemente.
   - **Regra de Negócio:** A exclusão só será permitida se o `StatusService` estiver como `ABERTO`.
   - Realizar exclusão em cascata: excluir também os orçamentos (budgets) que estiverem em aberto atrelados ao serviço.

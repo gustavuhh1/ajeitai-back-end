@@ -40,4 +40,5 @@ export interface IServiceRepository {
     findByIdWithDetails(id:string): Promise<ServiceWithDetails | null>
     countByAddressId(addressId: string): Promise<number>
     update(id: string, data: Partial<Service>): Promise<void>
+    delete(id: string): Promise<void>
 }

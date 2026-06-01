@@ -20,3 +20,6 @@ servicesRoutes.post("/", authMiddleware, ensureRole("CLIENT"), servicesControlle
 
 // Permite a atualização parcial de um serviço pelo dono
 servicesRoutes.patch("/:id", authMiddleware, ensureRole("CLIENT"), servicesController.update);
+
+// Permite a exclusão permanente de um serviço pelo dono
+servicesRoutes.delete("/:id", authMiddleware, ensureRole("CLIENT"), servicesController.delete);
