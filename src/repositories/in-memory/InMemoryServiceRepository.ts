@@ -121,4 +121,26 @@ export class InMemoryServiceRepository implements IServiceRepository {
   async countByAddressId(addressId: string): Promise<number> {
     return this.items.filter(s => s.address_id === addressId).length;
   }
+
+  async update(id: string, data: Partial<Service>): Promise<void> {
+    const serviceIndex = this.items.findIndex(s => s.id === id);
+    if (serviceIndex >= 0) {
+      const s = this.items[serviceIndex];
+      this.items[serviceIndex] = new Service({
+        id: s.id,
+        title: data.title ?? s.title,
+        description: data.description ?? s.description,
+        images_url: data.images_url ?? s.images_url,
+        address_id: data.address_id ?? s.address_id,
+        status: s.status,
+        categoryIds: s.categoryIds,
+        client_id: s.client_id,
+        provider_id: s.provider_id,
+        start_date: s.start_date,
+        end_date: s.end_date,
+        createdAt: s.createdAt,
+        updatedAt: new Date(),
+      });
+    }
+  }
 }

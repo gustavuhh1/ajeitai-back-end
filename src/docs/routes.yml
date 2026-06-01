@@ -132,6 +132,67 @@ paths:
         "200":
           description: Perfil atualizado com sucesso
 
+  /change-password:
+    post:
+      tags: [Usuários]
+      summary: Altera a senha do usuário autenticado
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                newPassword:
+                  type: string
+                revokeOtherSessions:
+                  type: boolean
+      responses:
+        "200":
+          description: Senha alterada com sucesso
+
+  /forget-password:
+    post:
+      tags: [Usuários]
+      summary: Solicita a recuperação de senha
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                redirectTo:
+                  type: string
+      responses:
+        "200":
+          description: E-mail enviado com sucesso
+
+  /reset-password:
+    post:
+      tags: [Usuários]
+      summary: Redefine a senha com o token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newPassword:
+                  type: string
+                token:
+                  type: string
+      responses:
+        "200":
+          description: Senha redefinida com sucesso
+
   # --- SERVIÇOS ---
   /servicos:
     get:
@@ -218,6 +279,38 @@ paths:
       responses:
         "200":
           description: Dados do serviço
+    patch:
+      tags: [Serviços]
+      summary: Editar um serviço
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                images_url:
+                  type: array
+                  items:
+                    type: string
+                address_id:
+                  type: string
+      responses:
+        "200":
+          description: Serviço atualizado com sucesso
+
 
   # --- ORÇAMENTOS ---
   /orcamentos/{serviceId}:

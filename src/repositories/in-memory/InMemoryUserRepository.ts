@@ -43,4 +43,16 @@ export class InMemoryUserRepository implements IUserRepository {
     const user = this.items.find(u => u.email === email && u.password === password);
     return user || null;
   }
+
+  async changePassword(headers: Headers, body: any): Promise<void> {
+    // In-memory mock for changePassword
+  }
+
+  async forgetPassword(body: any): Promise<void> {
+    // In-memory mock for forgetPassword
+  }
+
+  async resetPassword(body: any): Promise<void> {
+    // In-memory mock for resetPassword
+  }
 }

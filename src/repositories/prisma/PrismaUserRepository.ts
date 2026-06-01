@@ -81,12 +81,15 @@ export class PrismaUserRepository implements IUserRepository {
     });
   }
 
-  async resetPassword(password: string, token: string): Promise<void> {
-    await auth.api.resetPassword({
-      body: {
-        newPassword: password,
-        token: token,
-      },
-    });
+  async changePassword(headers: Headers, body: any): Promise<void> {
+    await auth.api.changePassword({ headers, body });
+  }
+
+  async forgetPassword(body: any): Promise<void> {
+    await auth.api.requestPasswordReset({ body });
+  }
+
+  async resetPassword(body: any): Promise<void> {
+    await auth.api.resetPassword({ body });
   }
 }

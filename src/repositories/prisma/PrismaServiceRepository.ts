@@ -174,5 +174,18 @@ export class PrismaServiceRepository implements IServiceRepository {
       where: { address_id: addressId },
     });
   }
+
+  async update(id: string, data: Partial<Service>): Promise<void> {
+    await prisma.service.update({
+      where: { id },
+      data: {
+        title: data.title,
+        description: data.description,
+        images_url: data.images_url ?? undefined,
+        address_id: data.address_id,
+        updatedAt: new Date(),
+      },
+    });
+  }
 }
 

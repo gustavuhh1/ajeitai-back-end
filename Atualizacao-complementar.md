@@ -111,13 +111,13 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] **Atualização de Perfil (Usuário):**
   - Criar rota `PATCH` para atualizar informações mutáveis do usuário (`telefone`, `nome`, `descrição`, `image`).
   - O endpoint deve aceitar *body* parcial, atualizando apenas os campos que forem enviados.
-- [ ] **Redefinição de Senha (Logado):**
+- [x] **Redefinição de Senha (Logado):**
   - Criar Rota/UseCase para alterar a senha fornecendo `senhaAntiga` e `senhaNova`, utilizando os recursos do `better-auth`.
-- [ ] **Recuperação de Senha (Esqueci minha senha):**
+- [x] **Recuperação de Senha (Esqueci minha senha):**
   - Implementar Rota/UseCase para enviar e-mail com link de recuperação.
   - Integrar o serviço terceirizado **Resend** para realizar o disparo real e seguro dos e-mails aos usuários.
   - O front-end validará a URL e o back-end processará a redefinição utilizando as funções do `better-auth`.
-- [ ] **Edição de Serviço:**
+- [x] **Edição de Serviço:**
   - Criar rota `PATCH` para alteração de informações do serviço (`images_url`, `description`, `title`, `endereço`).
   - Garantir que apenas o Cliente autor do serviço possa realizar a alteração.
   - O endpoint deve aceitar atualizações parciais.

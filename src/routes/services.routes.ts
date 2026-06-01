@@ -17,3 +17,6 @@ servicesRoutes.get("/:id", servicesController.getDetails);
 
 // Permite que um cliente crie um novo serviço/solicitação na plataforma
 servicesRoutes.post("/", authMiddleware, ensureRole("CLIENT"), servicesController.create);
+
+// Permite a atualização parcial de um serviço pelo dono
+servicesRoutes.patch("/:id", authMiddleware, ensureRole("CLIENT"), servicesController.update);

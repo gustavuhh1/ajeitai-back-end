@@ -1,9 +1,9 @@
-import { Request, Response } from 'express';
-import { z } from 'zod';
-import { createServiceFactory } from '@/usecases/factories/createServiceFactory';
-import { listAvailableServicesFactory } from '@/usecases/factories/listAvailableServicesFactory';
-import { getServiceDetailsFactory } from '@/usecases/factories/getServiceDetailsFactory';
-import { listClientServicesFactory } from '@/usecases/factories/listClientServicesFactory';
+import { Request, Response } from "express";
+import { z } from "zod";
+import { createServiceFactory } from "@/usecases/factories/createServiceFactory";
+import { listAvailableServicesFactory } from "@/usecases/factories/listAvailableServicesFactory";
+import { getServiceDetailsFactory } from "@/usecases/factories/getServiceDetailsFactory";
+import { listClientServicesFactory } from "@/usecases/factories/listClientServicesFactory";
 
 export class ServicesController {
   async create(req: Request, res: Response): Promise<void> {
@@ -17,13 +17,13 @@ export class ServicesController {
       });
 
       const data = createBodySchema.parse(req.body);
-      
+
       const clientId = req.user!.id;
 
       const useCase = createServiceFactory();
       const service = await useCase.execute({
         ...data,
-        client_id: clientId
+        client_id: clientId,
       });
 
       res.status(201).json(service);
@@ -93,6 +93,42 @@ export class ServicesController {
       res.status(400).json({ error: error.message });
     }
   }
+
+  async update(req: Request, res: Response): Promise<void> {
+    try {
+      const getRequestParams = z.object({
+        id: z.uuid(),
+      });
+
+      const updateBodySchema = z.object({
+        title: z.string().optional(),
+        description: z.string().optional(),
+        images_url: z.array(z.string()).optional(),
+        address_id: z.uuid().optional(),
+      });
+
+      const { id: serviceId } = getRequestParams.parse(req.params);
+      const data = updateBodySchema.parse(req.body);
+      const userId = req.user!.id;
+
+      const {
+        updateServiceFactory,
+      } = require("@/usecases/factories/updateServiceFactory");
+      const useCase = updateServiceFactory();
+
+      await useCase.execute({
+        userId,
+        serviceId,
+        ...data,
+      });
+
+      res.status(200).json({ message: "Serviço atualizado com sucesso" });
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ errors: error.message });
+      } else {
+        res.status(400).json({ error: error.message });
+      }
+    }
+  }
 }
-
-
