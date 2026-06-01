@@ -76,22 +76,32 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] Instalar dependência de desenvolvimento do tsup (`npm install tsup -D`).
 
 ## Fase 11: Refatoração de Endereços (Address)
-- [ ] Atualizar o model `Address`:
+- [x] Atualizar o model `Address`:
   - Mudar os atributos para Português (Pt-br): `rua`, `numero`, `ponto_de_referencia`, `cep`, `complemento`, `cidade`, `estado`.
   - Adicionar os campos `latitude` e `longitude` (transferidos de Service para Address).
   - Adicionar o campo booleano `principal` para definir o endereço principal.
   - Remover o campo `type`.
   - Tornar o campo `complemento` o único opcional.
-- [ ] Adaptar o fluxo de Criação de Endereço (API): O frontend será o responsável por consumir a API de Geocoding/CEP (para autocompletar e pegar as coordenadas), enviando a `latitude` e `longitude` já prontas no *body* da requisição. O back-end apenas validará e salvará.
-- [ ] Atualizar o model `Service`:
+- [x] Adaptar o fluxo de Criação de Endereço (API):
+  - Validar e salvar latitude e longitude enviadas pelo *body* pelo frontend (via Geocoding/CEP).
+  - Atualizar o `CreateAddressUseCase` para impor o limite máximo de 5 endereços por usuário.
+- [x] Atualizar o model `Service`:
   - Remover os campos `latitude`, `longitude`, `city` e `neighborhood`.
   - Adicionar relação com `Address` (um serviço possui 1 endereço, um endereço pode ser usado em vários serviços).
-- [ ] Atualizar a lógica de Usuários (Clientes e Prestadores):
-  - Permitir cadastro de múltiplos endereços (maximo 5 endereços por usuario) (casa, trabalho, etc) tendo uma relação de 1-N.
-  - Permitir a seleção do endereço no momento da criação do serviço.
-- [ ] Atualizar o model `Payment` e fluxo de pagamento (se necessário):
-  - Garantir que a informação de endereço esteja disponível durante as transações.
-- [ ] Refatorar Repositórios, UseCases e Controllers afetados pelas mudanças no endereço.
+- [x] Criar rotas da API para gerenciamento de Endereços:
+  - Adicionar endereço (`POST /addresses`).
+  - Listagem de endereços e busca (`GET /addresses`).
+  - Excluir endereço (`DELETE /addresses/:id`).
+  - Definir endereço como principal (`PATCH /addresses/:id/principal`).
+- [x] Funcionalidade de Endereço Principal (`TogglePrincipal`):
+  - Implementar método `togglePrincipal` no repositório (`Prisma` e `In-Memory`), utilizando transação (`$transaction`) para setar `false` nos outros endereços e `true` no endereço selecionado do usuário.
+  - Criar `TogglePrincipalAddressUseCase` e disponibilizar via rota `PATCH /addresses/:id/principal`.
+- [x] Regras de Negócio na Exclusão de Endereço (`DeleteAddressUseCase`):
+  - Implementar o método `countByAddressId` no `IServiceRepository`.
+  - Bloquear a exclusão de um endereço caso ele possua serviços atrelados (garantir integridade dos dados históricos).
+- [x] Atualizar a lógica de Usuários e Pagamentos:
+  - Permitir a seleção do `address_id` no momento da criação do serviço.
+  - Ajustar o fluxo financeiro e os UseCases (`CreateServiceUseCase`, `CreateBudgetUseCase`, `CreateReviewUseCase`, `GetServiceDetailsUseCase`, `ListAvailableServicesUseCase`) para consumirem `address_id` ao invés da antiga propriedade `city`.
 
 ## Fase 12: Funcionalidades Complementares (Integração Front-end)
 - [ ] **Listagem de Serviços do Cliente:**

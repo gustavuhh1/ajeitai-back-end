@@ -22,7 +22,7 @@ describe('CreateReviewUseCase', () => {
       description: 'Fix pipes',
       categoryIds: ['cat-1'],
       client_id: 'client-1',
-      city: 'City A',
+      address_id: 'address-1',
       status: 'FINALIZADO'
     }));
 
@@ -47,7 +47,7 @@ describe('CreateReviewUseCase', () => {
       description: 'Fix pipes',
       categoryIds: ['cat-1'],
       client_id: 'client-1',
-      city: 'City A',
+      address_id: 'address-1',
       status: 'ABERTO'
     }));
 

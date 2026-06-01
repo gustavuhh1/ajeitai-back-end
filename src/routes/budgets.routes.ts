@@ -9,21 +9,19 @@ const budgetsController = new BudgetsController();
 // Prestador envia o primeiro orçamento para um serviço
 budgetsRoutes.post("/", authMiddleware, ensureRole("PROVIDER"), budgetsController.create);
 
-// Prestador atualiza um orçamento recusado com um novo valor/proposta
+// Prestador e cliente pode atualiza um orçamento com um novo valor/proposta
 budgetsRoutes.patch(
   "/:id/contra-proposta",
   authMiddleware,
-  ensureRole("PROVIDER"),
   budgetsController.counterProposal,
 );
 
-// Cliente aceita um orçamento enviado por um prestador
+// Cliente ou Prestador aceita um orçamento dependendo do status
 budgetsRoutes.patch(
   "/:id/aceitar",
   authMiddleware,
-  ensureRole("CLIENT"),
   budgetsController.accept,
 );
 
 // Retorna todos os orçamentos vinculados a um serviço
-budgetsRoutes.get("/", authMiddleware, budgetsController.listServiceBudgets);
+budgetsRoutes.get("/:serviceId", authMiddleware, budgetsController.listServiceBudgets);

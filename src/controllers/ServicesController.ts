@@ -12,10 +12,7 @@ export class ServicesController {
         description: z.string(),
         images_url: z.array(z.string()).optional(),
         categoryIds: z.array(z.string()).min(1).max(3),
-        city: z.string(),
-        neighborhood: z.string().optional(),
-        latitude: z.number().optional(),
-        longitude: z.number().optional(),
+        address_id: z.uuid(),
       });
 
       const data = createBodySchema.parse(req.body);

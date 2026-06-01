@@ -47,7 +47,6 @@ model User {
   name          String
   email         String   @unique
   emailVerified Boolean  @default(false)
-  password      String?
   cpf           String   @unique
   birthDate     DateTime?
   phone         String?
@@ -143,15 +142,21 @@ model Verification {
 }
 
 model Address {
-  id              String  @id @default(uuid())
-  street          String
-  number          String
-  type            String
-  reference_point String?
-  cep             String
+  id                  String  @id @default(uuid())
+  rua                 String
+  numero              String
+  ponto_de_referencia String?
+  cep                 String
+  complemento         String?
+  cidade              String
+  estado              String
+  latitude            Float
+  longitude           Float
+  principal           Boolean @default(false)
 
   user_id String
-  user    User   @relation(fields: [user_id], references: [id])
+  user    User      @relation(fields: [user_id], references: [id])
+  services Service[]
 
   @@map("adresses")
 }
@@ -175,10 +180,8 @@ model Service {
   start_date  DateTime?
   end_date    DateTime?
 
-  latitude     Float?
-  longitude    Float?
-  city         String
-  neighborhood String?
+  address_id  String
+  address     Address @relation(fields: [address_id], references: [id], onDelete: Restrict)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
