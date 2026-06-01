@@ -170,6 +170,16 @@ paths:
         "201":
           description: Serviço criado
 
+  /servicos/me:
+    get:
+      tags: [Serviços]
+      summary: Listar todos os serviços criados pelo usuário autenticado
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Lista de serviços criados pelo usuário (ordenados por atualização mais recente)
+
   /servicos/{id}:
     get:
       tags: [Serviços]
@@ -404,6 +414,20 @@ paths:
           description: Lista de endereços
           
   /enderecos/{id}:
+    get:
+      tags: [Endereços]
+      summary: Buscar um endereço específico por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Dados do endereço
     delete:
       tags: [Endereços]
       summary: Deletar um endereço

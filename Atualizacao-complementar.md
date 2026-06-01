@@ -91,6 +91,7 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] Criar rotas da API para gerenciamento de Endereços:
   - Adicionar endereço (`POST /addresses`).
   - Listagem de endereços e busca (`GET /addresses`).
+  - Buscar endereço por ID (`GET /addresses/:id`).
   - Excluir endereço (`DELETE /addresses/:id`).
   - Definir endereço como principal (`PATCH /addresses/:id/principal`).
 - [x] Funcionalidade de Endereço Principal (`TogglePrincipal`):
@@ -104,7 +105,7 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
   - Ajustar o fluxo financeiro e os UseCases (`CreateServiceUseCase`, `CreateBudgetUseCase`, `CreateReviewUseCase`, `GetServiceDetailsUseCase`, `ListAvailableServicesUseCase`) para consumirem `address_id` ao invés da antiga propriedade `city`.
 
 ## Fase 12: Funcionalidades Complementares (Integração Front-end)
-- [ ] **Listagem de Serviços do Cliente:**
+- [x] **Listagem de Serviços do Cliente:**
   - Criar Rota/UseCase/Repositório para buscar todos os serviços criados pelo usuário autenticado (Cliente).
   - Ordenar os resultados por `updatedAt` (dos mais recentes para os mais antigos).
 - [ ] **Atualização de Perfil (Usuário):**

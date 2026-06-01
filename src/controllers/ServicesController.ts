@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { createServiceFactory } from '@/usecases/factories/createServiceFactory';
 import { listAvailableServicesFactory } from '@/usecases/factories/listAvailableServicesFactory';
 import { getServiceDetailsFactory } from '@/usecases/factories/getServiceDetailsFactory';
+import { listClientServicesFactory } from '@/usecases/factories/listClientServicesFactory';
 
 export class ServicesController {
   async create(req: Request, res: Response): Promise<void> {
@@ -17,8 +18,6 @@ export class ServicesController {
 
       const data = createBodySchema.parse(req.body);
       
-      // Usando o id do usuário logado (simulado até a Fase 6)
-      // TODO: alterar isso para buscar o id do usuário logado
       const clientId = req.user!.id;
 
       const useCase = createServiceFactory();
@@ -79,6 +78,19 @@ export class ServicesController {
       } else {
         res.status(400).json({ error: error.message });
       }
+    }
+  }
+
+  async listMyServices(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = req.user!.id;
+
+      const useCase = listClientServicesFactory();
+      const services = await useCase.execute({ userId });
+
+      res.status(200).json(services);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
     }
   }
 }

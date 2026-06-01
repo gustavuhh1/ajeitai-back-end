@@ -4,6 +4,7 @@ import {
   ListServicesFilters,
   ListServicesResponse,
   ServiceWithDetails,
+  ServiceWithCategories,
 } from "../IServiceRepository";
 import { InMemoryUserRepository } from "./InMemoryUserRepository";
 import { InMemoryBudgetRepository } from "./InMemoryBudgetRepository";
@@ -51,6 +52,21 @@ export class InMemoryServiceRepository implements IServiceRepository {
     const items = filtered.slice(start, end);
 
     return { items, total };
+  }
+
+  async findAllByUser(userId: string): Promise<ServiceWithCategories[]> {
+    return this.items
+      .filter((s) => s.client_id === userId)
+      .sort((a, b) => {
+        const dateA = a.updatedAt ? a.updatedAt.getTime() : 0;
+        const dateB = b.updatedAt ? b.updatedAt.getTime() : 0;
+        return dateB - dateA;
+      })
+      .map((s) => {
+        return Object.assign(s, {
+          categories: s.categoryIds.map(id => ({ id, name: "Categoria Mock" }))
+        }) as ServiceWithCategories;
+      });
   }
 
   async findByIdWithDetails(id: string): Promise<ServiceWithDetails | null> {

@@ -53,8 +53,8 @@ export class Service {
       start_date: props.start_date ?? null,
       end_date: props.end_date ?? null,
       address_id: props.address_id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: props.createdAt ?? new Date(),
+      updatedAt: props.updatedAt ?? new Date(),
     };
   }
 

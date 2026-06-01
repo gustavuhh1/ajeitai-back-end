@@ -9,6 +9,9 @@ const servicesController = new ServicesController();
 // Lista todos os serviços disponíveis (aceita filtros por query params)
 servicesRoutes.get("/", servicesController.listAvailable);
 
+// Lista todos os serviços criados pelo cliente autenticado
+servicesRoutes.get("/me", authMiddleware, servicesController.listMyServices);
+
 // Retorna os detalhes de um serviço específico pelo ID
 servicesRoutes.get("/:id", servicesController.getDetails);
 
