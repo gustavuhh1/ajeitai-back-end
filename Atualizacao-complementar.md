@@ -125,7 +125,7 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
   - Criar Rota/UseCase para o cliente excluir um serviço permanentemente.
   - **Regra de Negócio:** A exclusão só será permitida se o `StatusService` estiver como `ABERTO`.
   - Realizar exclusão em cascata: excluir também os orçamentos (budgets) que estiverem em aberto atrelados ao serviço.
-- [ ] **Regra de Prazo para Avaliação (Review):**
+- [x] **Regra de Prazo para Avaliação (Review):**
   - Atualizar o UseCase de avaliações para checar a data de finalização.
   - Se o serviço foi `FINALIZADO` há mais de 2 dias, o sistema deve impossibilitar o usuário de enviar uma avaliação.
 

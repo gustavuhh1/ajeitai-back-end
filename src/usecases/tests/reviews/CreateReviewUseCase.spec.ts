@@ -71,4 +71,29 @@ describe('CreateReviewUseCase', () => {
       })
     ).rejects.toThrow('Serviço não encontrado');
   });
+
+  it('não deve ser possível avaliar um serviço finalizado há mais de 2 dias', async () => {
+    const expiredDate = new Date();
+    expiredDate.setDate(expiredDate.getDate() - 3);
+
+    inMemoryServiceRepository.items.push(new Service({
+      id: 'service-3',
+      title: 'Plumbing',
+      description: 'Fix pipes',
+      categoryIds: ['cat-1'],
+      client_id: 'client-1',
+      address_id: 'address-1',
+      status: 'FINALIZADO',
+      end_date: expiredDate
+    }));
+
+    await expect(() =>
+      sut.execute({
+        serviceId: 'service-3',
+        rating: 5,
+        reviewerId: 'client-1',
+        reviewedId: 'provider-1'
+      })
+    ).rejects.toThrow('O prazo para avaliação (2 dias após a finalização) já expirou');
+  });
 });

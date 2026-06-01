@@ -114,12 +114,14 @@ export class Service {
     if (this.props.status !== "APROVADO")
       throw new Error("Serviço precisa estar aprovado para iniciar");
     this.props.status = "EM_ANDAMENTO";
+    this.props.start_date = new Date();
   }
 
   public finalizarServico() {
     if (this.props.status !== "EM_ANDAMENTO")
       throw new Error("Serviço precisa estar em andamento para ser finalizado");
     this.props.status = "FINALIZADO";
+    this.props.end_date = new Date();
   }
 
   public cancelar() {
