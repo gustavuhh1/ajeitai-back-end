@@ -57,5 +57,35 @@ export class UsersController {
       }
     }
   }
+
+  async updateProfile(req: Request, res: Response): Promise<void> {
+    try {
+      const updateBodySchema = z.object({
+        name: z.string().optional(),
+        phone: z.string().optional(),
+        description: z.string().optional(),
+        image: z.string().optional(),
+      });
+
+      const data = updateBodySchema.parse(req.body);
+
+      // Importar a factory localmente para evitar circular dependency issues se houver, ou apenas import no topo.
+      const { updateUserProfileFactory } = require("@/usecases/factories/updateUserProfileFactory");
+      const useCase = updateUserProfileFactory();
+      
+      await useCase.execute({
+        userId: req.user!.id,
+        ...data,
+      });
+
+      res.status(200).json({ message: "Perfil atualizado com sucesso" });
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ errors: error.message });
+      } else {
+        res.status(400).json({ error: error.message });
+      }
+    }
+  }
 }
 

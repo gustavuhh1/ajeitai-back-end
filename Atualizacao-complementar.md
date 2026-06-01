@@ -108,7 +108,7 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] **Listagem de Serviços do Cliente:**
   - Criar Rota/UseCase/Repositório para buscar todos os serviços criados pelo usuário autenticado (Cliente).
   - Ordenar os resultados por `updatedAt` (dos mais recentes para os mais antigos).
-- [ ] **Atualização de Perfil (Usuário):**
+- [x] **Atualização de Perfil (Usuário):**
   - Criar rota `PATCH` para atualizar informações mutáveis do usuário (`telefone`, `nome`, `descrição`, `image`).
   - O endpoint deve aceitar *body* parcial, atualizando apenas os campos que forem enviados.
 - [ ] **Redefinição de Senha (Logado):**

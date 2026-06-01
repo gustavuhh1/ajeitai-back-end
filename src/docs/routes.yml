@@ -107,6 +107,31 @@ paths:
         "201":
           description: Prestador cadastrado com sucesso
 
+  /perfil:
+    patch:
+      tags: [Usuários]
+      summary: Atualizar perfil do usuário autenticado
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+                description:
+                  type: string
+                image:
+                  type: string
+      responses:
+        "200":
+          description: Perfil atualizado com sucesso
+
   # --- SERVIÇOS ---
   /servicos:
     get:
