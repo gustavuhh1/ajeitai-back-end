@@ -88,6 +88,11 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] Atualizar o model `Service`:
   - Remover os campos `latitude`, `longitude`, `city` e `neighborhood`.
   - Adicionar relação com `Address` (um serviço possui 1 endereço, um endereço pode ser usado em vários serviços).
+- [x] Criar rotas da API para gerenciamento de Endereços:
+  - Adicionar endereço (`POST /addresses`).
+  - Listagem de endereços e busca (`GET /addresses`).
+  - Excluir endereço (`DELETE /addresses/:id`).
+  - Definir endereço como principal (`PATCH /addresses/:id/principal`).
 - [x] Funcionalidade de Endereço Principal (`TogglePrincipal`):
   - Implementar método `togglePrincipal` no repositório (`Prisma` e `In-Memory`), utilizando transação (`$transaction`) para setar `false` nos outros endereços e `true` no endereço selecionado do usuário.
   - Criar `TogglePrincipalAddressUseCase` e disponibilizar via rota `PATCH /addresses/:id/principal`.
