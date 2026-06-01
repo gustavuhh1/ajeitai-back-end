@@ -358,3 +358,79 @@ paths:
       responses:
         "201":
           description: Avaliação salva
+
+  # --- ENDEREÇOS ---
+  /enderecos:
+    post:
+      tags: [Endereços]
+      summary: Criar novo endereço
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rua:
+                  type: string
+                numero:
+                  type: string
+                complemento:
+                  type: string
+                ponto_de_referencia:
+                  type: string
+                cep:
+                  type: string
+                cidade:
+                  type: string
+                estado:
+                  type: string
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+      responses:
+        "201":
+          description: Endereço criado com sucesso
+    get:
+      tags: [Endereços]
+      summary: Listar endereços do usuário autenticado
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Lista de endereços
+          
+  /enderecos/{id}:
+    delete:
+      tags: [Endereços]
+      summary: Deletar um endereço
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Endereço deletado com sucesso
+          
+  /enderecos/{id}/principal:
+    patch:
+      tags: [Endereços]
+      summary: Definir endereço como principal
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Endereço atualizado como principal
