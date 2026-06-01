@@ -21,10 +21,7 @@ export interface ServiceProps {
   createdAt?: Date;
   updatedAt?: Date;
 
-  latitude?: number | null;
-  longitude?: number | null;
-  city: string;
-  neighborhood?: string | null;
+  address_id: string;
 }
 
 export class Service {
@@ -35,8 +32,8 @@ export class Service {
       throw new Error("O título do serviço é obrigatório");
     }
 
-    if (!props.city) {
-      throw new Error("A cidade do serviço é obrigatória para localização");
+    if (!props.address_id) {
+      throw new Error("O ID do endereço é obrigatório");
     }
 
     if (!props.categoryIds || props.categoryIds.length === 0) {
@@ -55,9 +52,7 @@ export class Service {
       provider_id: props.provider_id ?? null,
       start_date: props.start_date ?? null,
       end_date: props.end_date ?? null,
-      latitude: props.latitude ?? null,
-      longitude: props.longitude ?? null,
-      neighborhood: props.neighborhood ?? null,
+      address_id: props.address_id,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -95,17 +90,8 @@ export class Service {
     return this.props.end_date;
   }
 
-  get latitude() {
-    return this.props.latitude;
-  }
-  get longitude() {
-    return this.props.longitude;
-  }
-  get city() {
-    return this.props.city;
-  }
-  get neighborhood() {
-    return this.props.neighborhood;
+  get address_id() {
+    return this.props.address_id;
   }
   get createdAt() {
     return this.props.createdAt;

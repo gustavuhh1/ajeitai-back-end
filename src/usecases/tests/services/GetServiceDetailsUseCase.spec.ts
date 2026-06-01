@@ -19,7 +19,7 @@ describe('GetServiceDetailsUseCase', () => {
       description: 'The kitchen sink is leaking.',
       categoryIds: ['cat-1'],
       client_id: 'client-123',
-      city: 'New York',
+      address_id: 'address-1',
       status: 'ABERTO'
     });
 

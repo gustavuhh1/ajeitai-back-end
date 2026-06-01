@@ -18,6 +18,14 @@ export class CounterProposalUseCase {
       throw new Error("Orçamento não encontrado");
     }
 
+    if (data.isFromClient && budget.status !== "AGUARDANDO_CLIENTE") {
+      throw new Error("Não é possível enviar contraproposta, aguardando resposta do prestador.");
+    }
+
+    if (!data.isFromClient && budget.status !== "AGUARDANDO_PRESTADOR") {
+      throw new Error("Não é possível enviar contraproposta, aguardando resposta do cliente.");
+    }
+
     budget.fazerCotraProposta(
       data.newPrice,
       data.newDate,

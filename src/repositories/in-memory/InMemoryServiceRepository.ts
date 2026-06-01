@@ -7,6 +7,7 @@ import {
 } from "../IServiceRepository";
 import { InMemoryUserRepository } from "./InMemoryUserRepository";
 import { InMemoryBudgetRepository } from "./InMemoryBudgetRepository";
+import { InMemoryAddressRepository } from "./InMemoryAddressRepository";
 
 export class InMemoryServiceRepository implements IServiceRepository {
   public items: Service[] = [];
@@ -15,6 +16,7 @@ export class InMemoryServiceRepository implements IServiceRepository {
   constructor(
     private userRepository?: InMemoryUserRepository,
     private budgetRepository?: InMemoryBudgetRepository,
+    private addressRepository?: InMemoryAddressRepository,
   ) {}
 
   async create(service: Service): Promise<void> {
@@ -35,9 +37,12 @@ export class InMemoryServiceRepository implements IServiceRepository {
     }
 
     if (filters.city) {
-      filtered = filtered.filter(
-        (s) => s.city.toLowerCase() === filters.city!.toLowerCase(),
-      );
+      if (this.addressRepository) {
+        filtered = filtered.filter((s) => {
+          const addr = this.addressRepository!.items.find(a => a.id === s.address_id);
+          return addr?.cidade.toLowerCase() === filters.city!.toLowerCase();
+        });
+      }
     }
 
     const total = filtered.length;
@@ -65,6 +70,21 @@ export class InMemoryServiceRepository implements IServiceRepository {
       ).length;
     }
 
+    let addressInfo = { rua: "", numero: "", cidade: "", estado: "", latitude: 0, longitude: 0 };
+    if (this.addressRepository) {
+      const addr = this.addressRepository.items.find((a) => a.id === service.address_id);
+      if (addr) {
+        addressInfo = {
+          rua: addr.rua,
+          numero: addr.numero,
+          cidade: addr.cidade,
+          estado: addr.estado,
+          latitude: addr.latitude,
+          longitude: addr.longitude,
+        };
+      }
+    }
+
     return {
       id: service.id,
       title: service.title,
@@ -72,15 +92,17 @@ export class InMemoryServiceRepository implements IServiceRepository {
       client_id: service.client_id,
       categoryIds: service.categoryIds,
       images_url: service.images_url,
-      city: service.city,
-      neighborhood: service.neighborhood,
-      latitude: service.latitude,
-      longitude: service.longitude,
+      address_id: service.address_id,
       status: service.status,
       createdAt: service.createdAt,
       updatedAt: service.updatedAt,
       client,
       budgetCount,
+      address: addressInfo,
     } as any;
+  }
+
+  async countByAddressId(addressId: string): Promise<number> {
+    return this.items.filter(s => s.address_id === addressId).length;
   }
 }

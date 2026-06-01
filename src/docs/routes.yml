@@ -185,7 +185,7 @@ paths:
           description: Dados do serviço
 
   # --- ORÇAMENTOS ---
-  /orcamentos:
+  /orcamentos/{serviceId}:
     get:
       tags: [Orçamentos]
       summary: Listar orçamentos de um serviço
@@ -193,13 +193,15 @@ paths:
         - bearerAuth: []
       parameters:
         - name: serviceId
-          in: query
+          in: path
           required: true
           schema:
             type: string
       responses:
         "200":
           description: Lista de orçamentos
+
+  /orcamentos:
     post:
       tags: [Orçamentos]
       summary: Enviar novo orçamento
@@ -258,7 +260,7 @@ paths:
   /orcamentos/{id}/aceitar:
     patch:
       tags: [Orçamentos]
-      summary: Cliente aceita o orçamento
+      summary: Cliente ou Prestador aceita o orçamento
       security:
         - bearerAuth: []
       parameters:

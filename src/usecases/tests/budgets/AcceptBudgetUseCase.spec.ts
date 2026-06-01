@@ -35,7 +35,8 @@ describe('AcceptBudgetUseCase', () => {
 
     const acceptedBudget = await sut.execute({
       budgetId: 'budget-1',
-      serviceId: 'service-1'
+      serviceId: 'service-1',
+      isFromClient: true
     });
 
     expect(acceptedBudget.status).toBe('ACEITO');
@@ -47,7 +48,8 @@ describe('AcceptBudgetUseCase', () => {
     await expect(() =>
       sut.execute({
         budgetId: 'non-existent',
-        serviceId: 'service-1'
+        serviceId: 'service-1',
+        isFromClient: true
       })
     ).rejects.toThrow('Orçamento não encontrado');
   });

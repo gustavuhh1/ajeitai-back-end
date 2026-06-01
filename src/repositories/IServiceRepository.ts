@@ -15,6 +15,14 @@ export interface ListServicesResponse {
 export type ServiceWithDetails = Service & {
     client: {name: string, image?: string | null}
     budgetCount: number
+    address: {
+        rua: string
+        numero: string
+        cidade: string
+        estado: string
+        latitude: number
+        longitude: number
+    }
 }
 
 export interface IServiceRepository {
@@ -22,4 +30,5 @@ export interface IServiceRepository {
     findById(id: string): Promise<Service | null>
     findAllAvailable(filters: ListServicesFilters): Promise<ListServicesResponse>
     findByIdWithDetails(id:string): Promise<ServiceWithDetails | null>
+    countByAddressId(addressId: string): Promise<number>
 }

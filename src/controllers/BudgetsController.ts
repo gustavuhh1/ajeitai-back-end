@@ -38,19 +38,22 @@ export class BudgetsController {
     try {
       const paramsSchema = z.object({ id: z.uuid() });
       const bodySchema = z.object({
-        newPrice: z.number().positive(),
-        newDate: z.coerce.date(),
-        newDescription: z.string(),
-        isFromClient: z.boolean(),
+        price: z.number().positive(),
+        estimatedDate: z.coerce.date(),
+        description: z.string(),
       });
 
       const { id } = paramsSchema.parse(req.params);
       const data = bodySchema.parse(req.body);
+      const isFromClient = req.user!.role === "CLIENT";
 
       const useCase = counterProposalFactory();
       const budget = await useCase.execute({
         budgetId: id,
-        ...data
+        isFromClient,
+        newPrice: data.price,
+        newDate: data.estimatedDate,
+        newDescription: data.description,
       });
 
       res.status(200).json(budget);
@@ -70,9 +73,10 @@ export class BudgetsController {
 
       const { id } = paramsSchema.parse(req.params);
       const { serviceId } = bodySchema.parse(req.body);
+      const isFromClient = req.user!.role === "CLIENT";
 
       const useCase = acceptBudgetFactory();
-      const budget = await useCase.execute({ budgetId: id, serviceId });
+      const budget = await useCase.execute({ budgetId: id, serviceId, isFromClient });
 
       res.status(200).json(budget);
     } catch (error: any) {

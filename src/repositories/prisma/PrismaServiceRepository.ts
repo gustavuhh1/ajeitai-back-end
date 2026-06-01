@@ -19,10 +19,7 @@ export class PrismaServiceRepository implements IServiceRepository {
         },
         client_id: service.client_id,
         status: service.status,
-        city: service.city,
-        latitude: service.latitude,
-        longitude: service.longitude,
-        neighborhood: service.neighborhood,
+        address_id: service.address_id,
       },
     });
   }
@@ -46,10 +43,7 @@ export class PrismaServiceRepository implements IServiceRepository {
       start_date: serviceData.start_date,
       end_date: serviceData.end_date,
       status: serviceData.status as any,
-      city: serviceData.city,
-      latitude: serviceData.latitude,
-      longitude: serviceData.longitude,
-      neighborhood: serviceData.neighborhood,
+      address_id: serviceData.address_id,
     });
   }
 
@@ -65,7 +59,7 @@ export class PrismaServiceRepository implements IServiceRepository {
     const where = {
       status: "ABERTO" as any,
       categories: categoryId ? { some: { id: categoryId } } : undefined,
-      city: city ? { contains: city, mode: "insensitive" as any } : undefined,
+      address: city ? { cidade: { contains: city, mode: "insensitive" as any } } : undefined,
     };
 
     const [serviceData, total] = await prisma.$transaction([
@@ -89,10 +83,7 @@ export class PrismaServiceRepository implements IServiceRepository {
           status: data.status as any,
           categoryIds: data.categories.map((c: any) => c.id),
           client_id: data.client_id,
-          city: data.city,
-          latitude: data.latitude,
-          longitude: data.longitude,
-          neighborhood: data.neighborhood,
+          address_id: data.address_id,
         }),
     );
 
@@ -113,6 +104,7 @@ export class PrismaServiceRepository implements IServiceRepository {
           },
         },
         budgets: true,
+        address: true,
       },
     });
 
@@ -127,16 +119,27 @@ export class PrismaServiceRepository implements IServiceRepository {
       client_id: serviceData.client_id,
       provider_id: serviceData.provider_id,
       status: serviceData.status as any,
-      city: serviceData.city,
-      latitude: serviceData.latitude,
-      longitude: serviceData.longitude,
-      neighborhood: serviceData.neighborhood,
+      address_id: serviceData.address_id,
     });
 
     return {
       ...service,
       budgetCount: serviceData.budgets ? serviceData.budgets.length : 0,
+      address: {
+        rua: serviceData.address.rua,
+        numero: serviceData.address.numero,
+        cidade: serviceData.address.cidade,
+        estado: serviceData.address.estado,
+        latitude: serviceData.address.latitude,
+        longitude: serviceData.address.longitude,
+      }
     } as ServiceWithDetails;
+  }
+
+  async countByAddressId(addressId: string): Promise<number> {
+    return prisma.service.count({
+      where: { address_id: addressId },
+    });
   }
 }
 
