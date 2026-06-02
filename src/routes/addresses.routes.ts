@@ -10,5 +10,6 @@ addressesRoutes.use(authMiddleware);
 
 addressesRoutes.post("/", addressesController.create);
 addressesRoutes.get("/", addressesController.list);
+addressesRoutes.get("/:id", addressesController.getById);
 addressesRoutes.delete("/:id", addressesController.delete);
 addressesRoutes.patch("/:id/principal", addressesController.togglePrincipal);

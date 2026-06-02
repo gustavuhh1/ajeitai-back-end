@@ -4,6 +4,7 @@ import {
   ListServicesFilters,
   ListServicesResponse,
   ServiceWithDetails,
+  ServiceWithCategories,
 } from "../IServiceRepository";
 import { InMemoryUserRepository } from "./InMemoryUserRepository";
 import { InMemoryBudgetRepository } from "./InMemoryBudgetRepository";
@@ -39,7 +40,7 @@ export class InMemoryServiceRepository implements IServiceRepository {
     if (filters.city) {
       if (this.addressRepository) {
         filtered = filtered.filter((s) => {
-          const addr = this.addressRepository!.items.find(a => a.id === s.address_id);
+          const addr = this.addressRepository!.items.find((a) => a.id === s.address_id);
           return addr?.cidade.toLowerCase() === filters.city!.toLowerCase();
         });
       }
@@ -51,6 +52,21 @@ export class InMemoryServiceRepository implements IServiceRepository {
     const items = filtered.slice(start, end);
 
     return { items, total };
+  }
+
+  async findAllByUser(userId: string): Promise<ServiceWithCategories[]> {
+    return this.items
+      .filter((s) => s.client_id === userId)
+      .sort((a, b) => {
+        const dateA = a.updatedAt ? a.updatedAt.getTime() : 0;
+        const dateB = b.updatedAt ? b.updatedAt.getTime() : 0;
+        return dateB - dateA;
+      })
+      .map((s) => {
+        return Object.assign(s, {
+          categories: s.categoryIds.map((id) => ({ id, name: "Categoria Mock" })),
+        }) as ServiceWithCategories;
+      });
   }
 
   async findByIdWithDetails(id: string): Promise<ServiceWithDetails | null> {
@@ -70,7 +86,14 @@ export class InMemoryServiceRepository implements IServiceRepository {
       ).length;
     }
 
-    let addressInfo = { rua: "", numero: "", cidade: "", estado: "", latitude: 0, longitude: 0 };
+    let addressInfo = {
+      rua: "",
+      numero: "",
+      cidade: "",
+      estado: "",
+      latitude: 0,
+      longitude: 0,
+    };
     if (this.addressRepository) {
       const addr = this.addressRepository.items.find((a) => a.id === service.address_id);
       if (addr) {
@@ -103,6 +126,38 @@ export class InMemoryServiceRepository implements IServiceRepository {
   }
 
   async countByAddressId(addressId: string): Promise<number> {
-    return this.items.filter(s => s.address_id === addressId).length;
+    return this.items.filter((s) => s.address_id === addressId).length;
+  }
+
+  async update(id: string, data: Partial<Service>): Promise<void> {
+    const serviceIndex = this.items.findIndex((s) => s.id === id);
+    if (serviceIndex >= 0) {
+      const s = this.items[serviceIndex];
+      this.items[serviceIndex] = new Service({
+        id: s!.id,
+        title: data.title ?? s!.title,
+        description: data.description ?? s!.description,
+        images_url: data.images_url ?? s!.images_url,
+        address_id: data.address_id ?? s!.address_id,
+        status: s!.status,
+        categoryIds: s!.categoryIds,
+        client_id: s!.client_id,
+        provider_id: s!.provider_id,
+        start_date: s!.start_date,
+        end_date: s!.end_date,
+        createdAt: s!.createdAt,
+        updatedAt: new Date(),
+      });
+    }
+  }
+
+  async delete(id: string): Promise<void> {
+    this.items = this.items.filter((s) => s.id !== id);
+
+    if (this.budgetRepository) {
+      this.budgetRepository.items = this.budgetRepository.items.filter(
+        (b) => b.serviceId !== id,
+      );
+    }
   }
 }

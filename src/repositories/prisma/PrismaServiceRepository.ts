@@ -5,6 +5,7 @@ import {
   ListServicesFilters,
   ListServicesResponse,
   ServiceWithDetails,
+  ServiceWithCategories,
 } from "../IServiceRepository";
 
 export class PrismaServiceRepository implements IServiceRepository {
@@ -90,6 +91,38 @@ export class PrismaServiceRepository implements IServiceRepository {
     return { items, total };
   }
 
+  // Faz um select no banco de dados e retorna todos os serviços criados por um usuário
+  async findAllByUser(userId: string): Promise<ServiceWithCategories[]> {
+    const serviceData = await prisma.service.findMany({
+      where: { client_id: userId },
+      orderBy: { updatedAt: "desc" },
+      include: { categories: true },
+    });
+
+    return serviceData.map((data) => {
+      const service = new Service({
+        id: data.id,
+        title: data.title,
+        images_url: data.images_url,
+        description: data.description,
+        status: data.status as any,
+        categoryIds: data.categories.map((c: any) => c.id),
+        client_id: data.client_id,
+        address_id: data.address_id,
+        provider_id: data.provider_id,
+        start_date: data.start_date,
+        end_date: data.end_date,
+      });
+
+      return Object.assign(service, {
+        categories: data.categories.map((c: any) => ({
+          id: c.id,
+          name: c.name,
+        })),
+      }) as ServiceWithCategories;
+    });
+  }
+
   // faz um select no banco de dados e retorna todos os detalhes do serviço
   async findByIdWithDetails(id: string): Promise<ServiceWithDetails | null> {
     const serviceData = await prisma.service.findUnique({
@@ -139,6 +172,36 @@ export class PrismaServiceRepository implements IServiceRepository {
   async countByAddressId(addressId: string): Promise<number> {
     return prisma.service.count({
       where: { address_id: addressId },
+    });
+  }
+
+  async update(id: string, data: Partial<Service>): Promise<void> {
+    await prisma.service.update({
+      where: { id },
+      data: {
+        title: data.title,
+        description: data.description,
+        images_url: data.images_url ?? undefined,
+        address_id: data.address_id,
+        updatedAt: new Date(),
+      },
+    });
+  }
+
+  async delete(id: string): Promise<void> {
+    await prisma.$transaction(async (tx) => {
+      // TODO: Futuramente, implementar aqui (ou disparar um evento) a lógica de notificação:
+      // Recuperar os orçamentos (budgets) atrelados a este serviço e notificar 
+      // todos os prestadores (providerId) que enviaram um orçamento de que o 
+      // serviço "*titulo do serviço*" foi excluído pelo usuário.
+
+      await tx.budget.deleteMany({
+        where: { serviceId: id },
+      });
+
+      await tx.service.delete({
+        where: { id },
+      });
     });
   }
 }

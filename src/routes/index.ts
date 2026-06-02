@@ -6,6 +6,7 @@ import { messagesRoutes } from "./messages.routes";
 import { paymentsRoutes } from "./payments.routes";
 import { reviewsRoutes } from "./reviews.routes";
 import { addressesRoutes } from "./addresses.routes";
+import { notificationsRoutes } from "./notifications.routes";
 
 export const router = Router();
 
@@ -16,3 +17,5 @@ router.use("/mensagens", messagesRoutes);
 router.use("/pagamentos", paymentsRoutes);
 router.use("/avaliacoes", reviewsRoutes);
 router.use("/enderecos", addressesRoutes);
+router.use("/notificacoes", notificationsRoutes);
+

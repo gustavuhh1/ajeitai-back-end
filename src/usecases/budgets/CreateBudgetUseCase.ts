@@ -1,6 +1,7 @@
 import { Budget } from "@/entities/Budget";
 import { IBudgetRepository } from "@/repositories/IBudgetRepository";
 import { IServiceRepository } from "@/repositories/IServiceRepository";
+import { INotificationService } from "@/services/INotificationService";
 
 interface CreateBudgetRequest {
   serviceId: string;
@@ -13,7 +14,8 @@ interface CreateBudgetRequest {
 export class CreateBudgetUseCase {
   constructor(
     private budgetRepository: IBudgetRepository,
-    private serviceRepository: IServiceRepository
+    private serviceRepository: IServiceRepository,
+    private notificationService: INotificationService
   ) {}
 
   async execute(data: CreateBudgetRequest) {
@@ -36,6 +38,15 @@ export class CreateBudgetUseCase {
     });
 
     await this.budgetRepository.create(budget);
+
+    // Dispara notificação para o cliente dono do serviço
+    await this.notificationService.dispatch(service.client_id, {
+      title: "Novo orçamento recebido",
+      message: `Você recebeu um novo orçamento no serviço "${service.title}" no valor de R$ ${budget.price.toFixed(2)}.`,
+      type: "NEW_QUOTE",
+      link: `/orcamentos/${service.id}`
+    });
+
     return budget;
   }
 }

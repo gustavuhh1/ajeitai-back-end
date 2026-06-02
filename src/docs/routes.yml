@@ -107,6 +107,92 @@ paths:
         "201":
           description: Prestador cadastrado com sucesso
 
+  /perfil:
+    patch:
+      tags: [Usuários]
+      summary: Atualizar perfil do usuário autenticado
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+                description:
+                  type: string
+                image:
+                  type: string
+      responses:
+        "200":
+          description: Perfil atualizado com sucesso
+
+  /change-password:
+    post:
+      tags: [Usuários]
+      summary: Altera a senha do usuário autenticado
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                newPassword:
+                  type: string
+                revokeOtherSessions:
+                  type: boolean
+      responses:
+        "200":
+          description: Senha alterada com sucesso
+
+  /forget-password:
+    post:
+      tags: [Usuários]
+      summary: Solicita a recuperação de senha
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                redirectTo:
+                  type: string
+      responses:
+        "200":
+          description: E-mail enviado com sucesso
+
+  /reset-password:
+    post:
+      tags: [Usuários]
+      summary: Redefine a senha com o token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newPassword:
+                  type: string
+                token:
+                  type: string
+      responses:
+        "200":
+          description: Senha redefinida com sucesso
+
   # --- SERVIÇOS ---
   /servicos:
     get:
@@ -158,17 +244,22 @@ paths:
                   type: array
                   items:
                     type: string
-                city:
+                address_id:
                   type: string
-                neighborhood:
-                  type: string
-                latitude:
-                  type: number
-                longitude:
-                  type: number
+                  format: uuid
       responses:
         "201":
           description: Serviço criado
+
+  /servicos/me:
+    get:
+      tags: [Serviços]
+      summary: Listar todos os serviços criados pelo usuário autenticado
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Lista de serviços criados pelo usuário (ordenados por atualização mais recente)
 
   /servicos/{id}:
     get:
@@ -183,8 +274,63 @@ paths:
       responses:
         "200":
           description: Dados do serviço
+    patch:
+      tags: [Serviços]
+      summary: Editar um serviço
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                images_url:
+                  type: array
+                  items:
+                    type: string
+                address_id:
+                  type: string
+      responses:
+        "200":
+          description: Serviço atualizado com sucesso
+    delete:
+      tags: [Serviços]
+      summary: Excluir um serviço permanentemente
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Serviço excluído com sucesso
 
   # --- ORÇAMENTOS ---
+  /orcamentos/me:
+    get:
+      tags: [Orçamentos]
+      summary: Listar todos os orçamentos enviados pelo prestador autenticado
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Lista de orçamentos com detalhes do serviço
+          
   /orcamentos/{serviceId}:
     get:
       tags: [Orçamentos]
@@ -404,6 +550,20 @@ paths:
           description: Lista de endereços
           
   /enderecos/{id}:
+    get:
+      tags: [Endereços]
+      summary: Buscar um endereço específico por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Dados do endereço
     delete:
       tags: [Endereços]
       summary: Deletar um endereço
@@ -434,3 +594,41 @@ paths:
       responses:
         "200":
           description: Endereço atualizado como principal
+
+  # --- NOTIFICAÇÕES ---
+  /notificacoes:
+    get:
+      tags: [Notificações]
+      summary: Listar todas as notificações do usuário logado
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Lista de notificações
+
+  /notificacoes/lidas:
+    patch:
+      tags: [Notificações]
+      summary: Marcar todas as notificações do usuário como lidas
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Sucesso
+
+  /notificacoes/{id}/lida:
+    patch:
+      tags: [Notificações]
+      summary: Marcar uma notificação específica como lida
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Sucesso

@@ -91,6 +91,7 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] Criar rotas da API para gerenciamento de Endereços:
   - Adicionar endereço (`POST /addresses`).
   - Listagem de endereços e busca (`GET /addresses`).
+  - Buscar endereço por ID (`GET /addresses/:id`).
   - Excluir endereço (`DELETE /addresses/:id`).
   - Definir endereço como principal (`PATCH /addresses/:id/principal`).
 - [x] Funcionalidade de Endereço Principal (`TogglePrincipal`):
@@ -104,42 +105,45 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
   - Ajustar o fluxo financeiro e os UseCases (`CreateServiceUseCase`, `CreateBudgetUseCase`, `CreateReviewUseCase`, `GetServiceDetailsUseCase`, `ListAvailableServicesUseCase`) para consumirem `address_id` ao invés da antiga propriedade `city`.
 
 ## Fase 12: Funcionalidades Complementares (Integração Front-end)
-- [ ] **Listagem de Serviços do Cliente:**
+- [x] **Listagem de Serviços do Cliente:**
   - Criar Rota/UseCase/Repositório para buscar todos os serviços criados pelo usuário autenticado (Cliente).
   - Ordenar os resultados por `updatedAt` (dos mais recentes para os mais antigos).
-- [ ] **Atualização de Perfil (Usuário):**
+- [x] **Atualização de Perfil (Usuário):**
   - Criar rota `PATCH` para atualizar informações mutáveis do usuário (`telefone`, `nome`, `descrição`, `image`).
   - O endpoint deve aceitar *body* parcial, atualizando apenas os campos que forem enviados.
-- [ ] **Redefinição de Senha (Logado):**
+- [x] **Redefinição de Senha (Logado):**
   - Criar Rota/UseCase para alterar a senha fornecendo `senhaAntiga` e `senhaNova`, utilizando os recursos do `better-auth`.
-- [ ] **Recuperação de Senha (Esqueci minha senha):**
+- [x] **Recuperação de Senha (Esqueci minha senha):**
   - Implementar Rota/UseCase para enviar e-mail com link de recuperação.
   - Integrar o serviço terceirizado **Resend** para realizar o disparo real e seguro dos e-mails aos usuários.
   - O front-end validará a URL e o back-end processará a redefinição utilizando as funções do `better-auth`.
-- [ ] **Edição de Serviço:**
+- [x] **Edição de Serviço:**
   - Criar rota `PATCH` para alteração de informações do serviço (`images_url`, `description`, `title`, `endereço`).
   - Garantir que apenas o Cliente autor do serviço possa realizar a alteração.
   - O endpoint deve aceitar atualizações parciais.
-- [ ] **Exclusão de Serviço:**
+- [x] **Exclusão de Serviço:**
   - Criar Rota/UseCase para o cliente excluir um serviço permanentemente.
   - **Regra de Negócio:** A exclusão só será permitida se o `StatusService` estiver como `ABERTO`.
   - Realizar exclusão em cascata: excluir também os orçamentos (budgets) que estiverem em aberto atrelados ao serviço.
-- [ ] **Regra de Prazo para Avaliação (Review):**
+- [x] **Regra de Prazo para Avaliação (Review):**
   - Atualizar o UseCase de avaliações para checar a data de finalização.
   - Se o serviço foi `FINALIZADO` há mais de 2 dias, o sistema deve impossibilitar o usuário de enviar uma avaliação.
+- [x] **Listagem de Orçamentos do Prestador:**
+  - Criar rota (`GET /orcamentos/me`) e UseCase onde o Prestador consiga visualizar todos os orçamentos que enviou.
+  - O retorno deve trazer os dados do orçamento juntamente com os dados essenciais do Serviço (titulo, status).
 
 ## Fase 13: Central de Notificações em Tempo Real (Socket.IO + Prisma)
-- [ ] **Modelagem (Prisma):**
+- [x] **Modelagem (Prisma):**
   - Criar o model `Notification` no `schema.prisma`.
   - Definir campos: `id`, `userId` (relação com User), `title`, `message`, `type` (ex: NEW_QUOTE, NEW_MESSAGE, STATUS_CHANGE, SERVICE_DELETED), `isRead` (default: false), `link` (opcional), `createdAt`.
-- [ ] **Infraestrutura em Tempo Real (Express):**
+- [x] **Infraestrutura em Tempo Real (Express):**
   - Instalar e configurar o `socket.io` junto ao servidor HTTP (`server.ts`).
   - Criar middleware de autenticação para as conexões do socket, garantindo que apenas usuários autenticados conectem.
   - Implementar lógica para cada usuário ingressar em uma "sala" (room) própria baseada no seu ID.
-- [ ] **Rotas REST (Sincronização do Front-end):**
+- [x] **Rotas REST (Sincronização do Front-end):**
   - `GET /api/notifications`: Buscar o histórico de notificações do usuário (ordenado do mais recente para o mais antigo).
   - `PATCH /api/notifications/mark-as-read`: Marcar notificações selecionadas (ou todas) como lidas.
-- [ ] **Emissão de Eventos (Casos de Uso):**
+- [x] **Emissão de Eventos (Casos de Uso):**
   - Interceptar as ações principais e disparar notificações (Salvar no Prisma + Emitir via Socket.IO):
     - Novo orçamento recebido (Cliente notificado).
     - Novas mensagens recebidas na negociação (Ambos).

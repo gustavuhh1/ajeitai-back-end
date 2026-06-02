@@ -77,4 +77,3 @@ export class User {
     this.props.avgRating = value;
   }
 }
-

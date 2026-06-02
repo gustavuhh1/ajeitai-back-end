@@ -11,12 +11,20 @@ describe("CreateBudgetUseCase", () => {
   let inMemoryServiceRepository: InMemoryServiceRepository;
   let inMemoryAddressRepository: InMemoryAddressRepository;
   let sut: CreateBudgetUseCase;
+  let notificationServiceMock: any;
 
   beforeEach(() => {
     inMemoryServiceRepository = new InMemoryServiceRepository();
     inMemoryBudgetRepository = new InMemoryBudgetRepository();
     inMemoryAddressRepository = new InMemoryAddressRepository();
-    sut = new CreateBudgetUseCase(inMemoryBudgetRepository, inMemoryServiceRepository);
+    notificationServiceMock = {
+      dispatch: async () => {},
+    };
+    sut = new CreateBudgetUseCase(
+      inMemoryBudgetRepository, 
+      inMemoryServiceRepository, 
+      notificationServiceMock
+    );
 
     const address = new Address(
       {

@@ -1,8 +1,9 @@
-import { Request, Response } from 'express';
-import { z } from 'zod';
-import { createServiceFactory } from '@/usecases/factories/createServiceFactory';
-import { listAvailableServicesFactory } from '@/usecases/factories/listAvailableServicesFactory';
-import { getServiceDetailsFactory } from '@/usecases/factories/getServiceDetailsFactory';
+import { Request, Response } from "express";
+import { z } from "zod";
+import { createServiceFactory } from "@/usecases/factories/createServiceFactory";
+import { listAvailableServicesFactory } from "@/usecases/factories/listAvailableServicesFactory";
+import { getServiceDetailsFactory } from "@/usecases/factories/getServiceDetailsFactory";
+import { listClientServicesFactory } from "@/usecases/factories/listClientServicesFactory";
 
 export class ServicesController {
   async create(req: Request, res: Response): Promise<void> {
@@ -16,15 +17,13 @@ export class ServicesController {
       });
 
       const data = createBodySchema.parse(req.body);
-      
-      // Usando o id do usuário logado (simulado até a Fase 6)
-      // TODO: alterar isso para buscar o id do usuário logado
+
       const clientId = req.user!.id;
 
       const useCase = createServiceFactory();
       const service = await useCase.execute({
         ...data,
-        client_id: clientId
+        client_id: clientId,
       });
 
       res.status(201).json(service);
@@ -81,6 +80,84 @@ export class ServicesController {
       }
     }
   }
+
+  async listMyServices(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = req.user!.id;
+
+      const useCase = listClientServicesFactory();
+      const services = await useCase.execute({ userId });
+
+      res.status(200).json(services);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  async update(req: Request, res: Response): Promise<void> {
+    try {
+      const getRequestParams = z.object({
+        id: z.uuid(),
+      });
+
+      const updateBodySchema = z.object({
+        title: z.string().optional(),
+        description: z.string().optional(),
+        images_url: z.array(z.string()).optional(),
+        address_id: z.uuid().optional(),
+      });
+
+      const { id: serviceId } = getRequestParams.parse(req.params);
+      const data = updateBodySchema.parse(req.body);
+      const userId = req.user!.id;
+
+      const {
+        updateServiceFactory,
+      } = require("@/usecases/factories/updateServiceFactory");
+      const useCase = updateServiceFactory();
+
+      await useCase.execute({
+        userId,
+        serviceId,
+        ...data,
+      });
+
+      res.status(200).json({ message: "Serviço atualizado com sucesso" });
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ errors: error.message });
+      } else {
+        res.status(400).json({ error: error.message });
+      }
+    }
+  }
+
+  async delete(req: Request, res: Response): Promise<void> {
+    try {
+      const getRequestParams = z.object({
+        id: z.uuid(),
+      });
+
+      const { id: serviceId } = getRequestParams.parse(req.params);
+      const userId = req.user!.id;
+
+      const {
+        deleteServiceFactory,
+      } = require("@/usecases/services/factories/deleteServiceFactory");
+      const useCase = deleteServiceFactory();
+
+      await useCase.execute({
+        userId,
+        serviceId,
+      });
+
+      res.status(200).json({ message: "Serviço excluído com sucesso" });
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ errors: error.message });
+      } else {
+        res.status(400).json({ error: error.message });
+      }
+    }
+  }
 }
-
-
