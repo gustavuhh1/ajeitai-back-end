@@ -6,6 +6,9 @@ import { ensureRole } from "@/middlewares/ensure-role";
 export const budgetsRoutes = Router();
 const budgetsController = new BudgetsController();
 
+// Retorna todos os orçamentos enviados pelo prestador
+budgetsRoutes.get("/me", authMiddleware, ensureRole("PROVIDER"), budgetsController.listMyBudgets);
+
 // Prestador envia o primeiro orçamento para um serviço
 budgetsRoutes.post("/", authMiddleware, ensureRole("PROVIDER"), budgetsController.create);
 

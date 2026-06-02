@@ -106,4 +106,19 @@ export class BudgetsController {
       }
     }
   }
+
+  async listMyBudgets(req: Request, res: Response): Promise<void> {
+    try {
+      const providerId = req.user!.id;
+      const {
+        listProviderBudgetsFactory,
+      } = require("@/usecases/budgets/factories/listProviderBudgetsFactory");
+      const useCase = listProviderBudgetsFactory();
+
+      const budgets = await useCase.execute({ providerId });
+      res.status(200).json(budgets);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
 }

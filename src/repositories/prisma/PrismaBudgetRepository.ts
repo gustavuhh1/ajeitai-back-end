@@ -110,5 +110,47 @@ export class PrismaBudgetRepository implements IBudgetRepository {
       },
     }));
   }
+
+  async findManyByProviderIdWithService(
+    providerId: string,
+  ): Promise<BudgetWithService[]> {
+    const budgets = await prisma.budget.findMany({
+      where: { providerId },
+      include: {
+        service: {
+          select: {
+            id: true,
+            title: true,
+            status: true,
+            client: {
+              select: {
+                name: true,
+                image: true,
+              }
+            }
+          }
+        }
+      },
+      orderBy: { createdAt: "desc" }
+    });
+
+    return budgets.map((item) => ({
+      id: item.id,
+      price: Number(item.price),
+      description: item.description,
+      estimatedDate: item.estimatedDate,
+      status: item.status,
+      createdAt: item.createdAt,
+      service: {
+        id: item.service.id,
+        title: item.service.title,
+        status: item.service.status,
+        client: {
+          name: item.service.client.name,
+          image: item.service.client.image,
+        }
+      },
+    }));
+  }
 }
 

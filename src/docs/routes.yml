@@ -321,6 +321,16 @@ paths:
           description: Serviço excluído com sucesso
 
   # --- ORÇAMENTOS ---
+  /orcamentos/me:
+    get:
+      tags: [Orçamentos]
+      summary: Listar todos os orçamentos enviados pelo prestador autenticado
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Lista de orçamentos com detalhes do serviço
+          
   /orcamentos/{serviceId}:
     get:
       tags: [Orçamentos]

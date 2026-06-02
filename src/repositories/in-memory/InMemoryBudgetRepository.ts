@@ -71,4 +71,28 @@ export class InMemoryBudgetRepository implements IBudgetRepository {
       this.items[index] = budget;
     }
   }
+
+  async findManyByProviderIdWithService(
+    providerId: string,
+  ): Promise<any[]> {
+    return this.items
+      .filter((b) => b.providerId === providerId)
+      .map((b) => ({
+        id: b.id,
+        price: b.price,
+        description: b.description,
+        estimatedDate: b.estimatedDate,
+        status: b.status,
+        createdAt: b.createdAt,
+        service: {
+          id: b.serviceId,
+          title: "Mock Service Title",
+          status: "ABERTO",
+          client: {
+            name: "Mock Client",
+            image: null,
+          }
+        },
+      }));
+  }
 }

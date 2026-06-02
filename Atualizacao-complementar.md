@@ -128,6 +128,9 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
 - [x] **Regra de Prazo para Avaliação (Review):**
   - Atualizar o UseCase de avaliações para checar a data de finalização.
   - Se o serviço foi `FINALIZADO` há mais de 2 dias, o sistema deve impossibilitar o usuário de enviar uma avaliação.
+- [x] **Listagem de Orçamentos do Prestador:**
+  - Criar rota (`GET /orcamentos/me`) e UseCase onde o Prestador consiga visualizar todos os orçamentos que enviou.
+  - O retorno deve trazer os dados do orçamento juntamente com os dados essenciais do Serviço (titulo, status).
 
 ## Fase 13: Central de Notificações em Tempo Real (Socket.IO + Prisma)
 - [ ] **Modelagem (Prisma):**
