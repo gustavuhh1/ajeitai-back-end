@@ -1,6 +1,8 @@
 import { Server as HttpServer } from 'node:http';
 import { Server, Socket } from 'socket.io';
 import { sendMessageFactory } from '@/usecases/factories/sendMessageFactory';
+import { auth } from '@/auth/auth';
+import { fromNodeHeaders } from 'better-auth/node';
 
 let io: Server;
 
@@ -13,8 +15,29 @@ export function initSocket(server: HttpServer) {
     }
   });
 
+  // Middleware de Autenticação para as conexões Socket.IO
+  io.use(async (socket, next) => {
+    try {
+      const session = await auth.api.getSession({
+        headers: fromNodeHeaders(socket.request.headers)
+      });
+      if (!session) {
+        return next(new Error('Authentication error: Você precisa estar logado'));
+      }
+      socket.data.user = session.user;
+      next();
+    } catch (err) {
+      return next(new Error('Authentication error: Erro interno na verificação'));
+    }
+  });
+
   io.on('connection', (socket: Socket) => {
-    console.log(`Novo cliente conectado via WebSocket: ${socket.id}`);
+    const user = socket.data.user;
+    console.log(`Novo cliente conectado via WebSocket: ${socket.id} (User: ${user.id})`);
+
+    // Entra na "sala pessoal" do usuário para receber notificações privadas
+    socket.join(user.id);
+    console.log(`Usuário ${user.id} ingressou na sua sala pessoal de notificações.`);
 
     // Cliente entra na sala do Orçamento
     socket.on('join_room', (budgetId: string) => {
@@ -41,7 +64,6 @@ export function initSocket(server: HttpServer) {
       imageUrl?: string;
     }) => {
       try {
-        // Usa a Factory existente para injetar dependências (Prisma) e instanciar o UseCase
         const sendMessageUseCase = sendMessageFactory();
 
         const message = await sendMessageUseCase.execute({
@@ -55,13 +77,12 @@ export function initSocket(server: HttpServer) {
         io.to(data.budgetId).emit('new_message', message);
       } catch (error) {
         console.error('Erro ao enviar mensagem pelo socket:', error);
-        // Opcional: Avisar o cliente que enviou sobre o erro
         socket.emit('message_error', { error: 'Não foi possível enviar a mensagem' });
       }
     });
 
     socket.on('disconnect', () => {
-      console.log(`Cliente desconectado: ${socket.id}`);
+      console.log(`Cliente desconectado: ${socket.id} (User: ${user.id})`);
     });
   });
 
@@ -74,3 +95,11 @@ export function getIO() {
   }
   return io;
 }
+
+// Função utilitária para emitir notificação privada para um usuário
+export function emitNotificationToUser(userId: string, payload: any) {
+  if (io) {
+    io.to(userId).emit('new_notification', payload);
+  }
+}
+

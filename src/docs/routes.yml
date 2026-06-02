@@ -594,3 +594,41 @@ paths:
       responses:
         "200":
           description: Endereço atualizado como principal
+
+  # --- NOTIFICAÇÕES ---
+  /notificacoes:
+    get:
+      tags: [Notificações]
+      summary: Listar todas as notificações do usuário logado
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Lista de notificações
+
+  /notificacoes/lidas:
+    patch:
+      tags: [Notificações]
+      summary: Marcar todas as notificações do usuário como lidas
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Sucesso
+
+  /notificacoes/{id}/lida:
+    patch:
+      tags: [Notificações]
+      summary: Marcar uma notificação específica como lida
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Sucesso

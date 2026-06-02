@@ -8,12 +8,18 @@ import { Service } from '../../../entities/Service';
 describe('CounterProposalBudgetUseCase', () => {
   let inMemoryBudgetRepository: InMemoryBudgetRepository;
   let inMemoryServiceRepository: InMemoryServiceRepository;
+  let notificationServiceMock: any;
   let sut: CounterProposalUseCase;
 
   beforeEach(() => {
     inMemoryBudgetRepository = new InMemoryBudgetRepository();
     inMemoryServiceRepository = new InMemoryServiceRepository();
-    sut = new CounterProposalUseCase(inMemoryBudgetRepository, inMemoryServiceRepository);
+    notificationServiceMock = { dispatch: async () => {} };
+    sut = new CounterProposalUseCase(
+      inMemoryBudgetRepository, 
+      inMemoryServiceRepository,
+      notificationServiceMock
+    );
   });
 
   it('deve ser possível fazer uma contraproposta', async () => {

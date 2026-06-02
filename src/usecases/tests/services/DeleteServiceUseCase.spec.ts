@@ -1,15 +1,24 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { InMemoryServiceRepository } from "@/repositories/in-memory/InMemoryServiceRepository";
+import { InMemoryBudgetRepository } from "@/repositories/in-memory/InMemoryBudgetRepository";
 import { DeleteServiceUseCase } from "@/usecases/services/DeleteServiceUseCase";
 import { Service } from "@/entities/Service";
 
 describe("DeleteServiceUseCase", () => {
   let serviceRepository: InMemoryServiceRepository;
+  let budgetRepository: InMemoryBudgetRepository;
+  let notificationServiceMock: any;
   let sut: DeleteServiceUseCase;
 
   beforeEach(() => {
     serviceRepository = new InMemoryServiceRepository();
-    sut = new DeleteServiceUseCase(serviceRepository);
+    budgetRepository = new InMemoryBudgetRepository();
+    notificationServiceMock = { dispatch: async () => {} };
+    sut = new DeleteServiceUseCase(
+      serviceRepository,
+      budgetRepository,
+      notificationServiceMock
+    );
   });
 
   it("should be able to delete a service", async () => {

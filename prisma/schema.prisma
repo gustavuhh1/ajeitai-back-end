@@ -42,6 +42,13 @@ enum BudgetStatus {
   RECUSADO
 }
 
+enum NotificationType {
+  NEW_QUOTE
+  NEW_MESSAGE
+  STATUS_CHANGE
+  SERVICE_DELETED
+}
+
 model User {
   id            String   @id @default(uuid())
   name          String
@@ -72,6 +79,7 @@ model User {
   provider_services Service[] @relation("ProviderServices")
   budgets           Budget[]
   messages          Message[]
+  notifications     Notification[]
 
   @@map("users")
 }
@@ -279,5 +287,20 @@ model ResetToken {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("reset_tokens")
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  title     String
+  message   String
+  type      NotificationType
+  isRead    Boolean          @default(false)
+  link      String?
+  createdAt DateTime         @default(now())
+
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
 }
 

@@ -8,12 +8,18 @@ import { Service } from '../../../entities/Service';
 describe('AcceptBudgetUseCase', () => {
   let inMemoryBudgetRepository: InMemoryBudgetRepository;
   let inMemoryServiceRepository: InMemoryServiceRepository;
+  let notificationServiceMock: any;
   let sut: AcceptBudgetUseCase;
 
   beforeEach(() => {
     inMemoryBudgetRepository = new InMemoryBudgetRepository();
     inMemoryServiceRepository = new InMemoryServiceRepository();
-    sut = new AcceptBudgetUseCase(inMemoryBudgetRepository, inMemoryServiceRepository);
+    notificationServiceMock = { dispatch: async () => {} };
+    sut = new AcceptBudgetUseCase(
+      inMemoryBudgetRepository, 
+      inMemoryServiceRepository,
+      notificationServiceMock
+    );
   });
 
   it('deve ser possível aceitar um orçamento e rejeitar os demais do mesmo serviço', async () => {

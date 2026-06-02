@@ -133,17 +133,17 @@ Este documento é a nossa fonte da verdade para o andamento da refatoração do 
   - O retorno deve trazer os dados do orçamento juntamente com os dados essenciais do Serviço (titulo, status).
 
 ## Fase 13: Central de Notificações em Tempo Real (Socket.IO + Prisma)
-- [ ] **Modelagem (Prisma):**
+- [x] **Modelagem (Prisma):**
   - Criar o model `Notification` no `schema.prisma`.
   - Definir campos: `id`, `userId` (relação com User), `title`, `message`, `type` (ex: NEW_QUOTE, NEW_MESSAGE, STATUS_CHANGE, SERVICE_DELETED), `isRead` (default: false), `link` (opcional), `createdAt`.
-- [ ] **Infraestrutura em Tempo Real (Express):**
+- [x] **Infraestrutura em Tempo Real (Express):**
   - Instalar e configurar o `socket.io` junto ao servidor HTTP (`server.ts`).
   - Criar middleware de autenticação para as conexões do socket, garantindo que apenas usuários autenticados conectem.
   - Implementar lógica para cada usuário ingressar em uma "sala" (room) própria baseada no seu ID.
-- [ ] **Rotas REST (Sincronização do Front-end):**
+- [x] **Rotas REST (Sincronização do Front-end):**
   - `GET /api/notifications`: Buscar o histórico de notificações do usuário (ordenado do mais recente para o mais antigo).
   - `PATCH /api/notifications/mark-as-read`: Marcar notificações selecionadas (ou todas) como lidas.
-- [ ] **Emissão de Eventos (Casos de Uso):**
+- [x] **Emissão de Eventos (Casos de Uso):**
   - Interceptar as ações principais e disparar notificações (Salvar no Prisma + Emitir via Socket.IO):
     - Novo orçamento recebido (Cliente notificado).
     - Novas mensagens recebidas na negociação (Ambos).
