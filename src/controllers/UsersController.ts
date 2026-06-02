@@ -93,7 +93,7 @@ export class UsersController {
     try {
       const {
         changePasswordFactory,
-      } = require("@/usecases/users/factories/changePasswordFactory");
+      } = require("@/usecases/users/factories/ChangePasswordFactory");
       const useCase = changePasswordFactory();
 
       await useCase.execute(req.headers as any, req.body);
@@ -127,7 +127,7 @@ export class UsersController {
     try {
       const {
         resetPasswordFactory,
-      } = require("@/usecases/users/factories/resetPasswordFactory");
+      } = require("@/usecases/users/factories/ResetPasswordFactory");
       const useCase = resetPasswordFactory();
 
       await useCase.execute(req.body);
