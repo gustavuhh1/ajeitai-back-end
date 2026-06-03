@@ -10,13 +10,14 @@ export class AddressesController {
   async create(req: Request, res: Response): Promise<void> {
     try {
       const createBodySchema = z.object({
+        apelido: z.string(),
         rua: z.string(),
         numero: z.string(),
-        ponto_de_referencia: z.string().optional(),
         cep: z.string(),
         complemento: z.string().optional(),
         cidade: z.string(),
         estado: z.string(),
+        bairro: z.string(),
         latitude: z.number(),
         longitude: z.number(),
         principal: z.boolean().optional(),

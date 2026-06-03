@@ -1,13 +1,14 @@
 import { randomUUID } from "node:crypto";
 
 export interface AddressProps {
+  apelido: string;
   rua: string;
   numero: string;
-  ponto_de_referencia?: string | null;
   cep: string;
   complemento?: string | null;
   cidade: string;
   estado: string;
+  bairro: string;
   latitude: number;
   longitude: number;
   principal?: boolean;
@@ -46,12 +47,12 @@ export class Address {
     this.props.numero = numero;
   }
 
-  get ponto_de_referencia(): string | null | undefined {
-    return this.props.ponto_de_referencia;
+  get apelido(): string {
+    return this.props.apelido;
   }
 
-  set ponto_de_referencia(ponto_de_referencia: string | null | undefined) {
-    this.props.ponto_de_referencia = ponto_de_referencia;
+  set apelido(apelido: string) {
+    this.props.apelido = apelido;
   }
 
   get cep(): string {
@@ -84,6 +85,14 @@ export class Address {
 
   set estado(estado: string) {
     this.props.estado = estado;
+  }
+
+  get bairro(): string {
+    return this.props.bairro;
+  }
+
+  set bairro(bairro: string) {
+    this.props.bairro = bairro;
   }
 
   get latitude(): number {

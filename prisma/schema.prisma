@@ -151,13 +151,14 @@ model Verification {
 
 model Address {
   id                  String  @id @default(uuid())
+  apelido             String
   rua                 String
   numero              String
-  ponto_de_referencia String?
   cep                 String
   complemento         String?
   cidade              String
   estado              String
+  bairro              String
   latitude            Float
   longitude           Float
   principal           Boolean @default(false)

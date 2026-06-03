@@ -2,13 +2,14 @@ import { Address } from "../../entities/Address";
 import { IAddressRepository } from "../../repositories/IAddressRepository";
 
 export interface CreateAddressRequest {
+  apelido: string;
   rua: string;
   numero: string;
-  ponto_de_referencia?: string;
   cep: string;
   complemento?: string;
   cidade: string;
   estado: string;
+  bairro: string;
   latitude: number;
   longitude: number;
   principal?: boolean;
@@ -33,13 +34,14 @@ export class CreateAddressUseCase {
     }
 
     const address = new Address({
+      apelido: request.apelido,
       rua: request.rua,
       numero: request.numero,
-      ponto_de_referencia: request.ponto_de_referencia,
       cep: request.cep,
       complemento: request.complemento,
       cidade: request.cidade,
       estado: request.estado,
+      bairro: request.bairro,
       latitude: request.latitude,
       longitude: request.longitude,
       principal: isPrincipal,

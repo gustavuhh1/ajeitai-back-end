@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { router } from "@/routes";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./utils/swagger";
@@ -8,6 +9,11 @@ import http from 'node:http'
 import { initSocket } from './websockets/socket';
 
 const app = express();
+
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true,
+}));
 
 app.all("/api/auth/*path", toNodeHandler(auth));
 

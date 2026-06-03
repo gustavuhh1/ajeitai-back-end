@@ -7,13 +7,14 @@ export class PrismaAddressRepository implements IAddressRepository {
     await prisma.address.create({
       data: {
         id: address.id,
+        apelido: address.apelido,
         rua: address.rua,
         numero: address.numero,
-        ponto_de_referencia: address.ponto_de_referencia,
         cep: address.cep,
         complemento: address.complemento,
         cidade: address.cidade,
         estado: address.estado,
+        bairro: address.bairro,
         latitude: address.latitude,
         longitude: address.longitude,
         principal: address.principal,
@@ -32,13 +33,14 @@ export class PrismaAddressRepository implements IAddressRepository {
       (address) =>
         new Address(
           {
+            apelido: address.apelido,
             rua: address.rua,
             numero: address.numero,
-            ponto_de_referencia: address.ponto_de_referencia,
             cep: address.cep,
             complemento: address.complemento,
             cidade: address.cidade,
             estado: address.estado,
+            bairro: address.bairro,
             latitude: address.latitude,
             longitude: address.longitude,
             principal: address.principal,
@@ -58,13 +60,14 @@ export class PrismaAddressRepository implements IAddressRepository {
 
     return new Address(
       {
+        apelido: address.apelido,
         rua: address.rua,
         numero: address.numero,
-        ponto_de_referencia: address.ponto_de_referencia,
         cep: address.cep,
         complemento: address.complemento,
         cidade: address.cidade,
         estado: address.estado,
+        bairro: address.bairro,
         latitude: address.latitude,
         longitude: address.longitude,
         principal: address.principal,

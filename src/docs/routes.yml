@@ -525,11 +525,13 @@ paths:
                   type: string
                 complemento:
                   type: string
-                ponto_de_referencia:
+                apelido:
                   type: string
                 cep:
                   type: string
                 cidade:
+                  type: string
+                bairro:
                   type: string
                 estado:
                   type: string
