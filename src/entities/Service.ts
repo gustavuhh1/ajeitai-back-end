@@ -127,4 +127,22 @@ export class Service {
   public cancelar() {
     this.props.status = "CANCELADO";
   }
+
+  toJSON() {
+    return {
+      id: this.id,
+      title: this.title,
+      images_url: this.images_url,
+      description: this.description,
+      status: this.status,
+      categoryIds: this.categoryIds,
+      client_id: this.client_id,
+      provider_id: this.provider_id,
+      start_date: this.start_date,
+      end_date: this.end_date,
+      address_id: this.address_id,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
+  }
 }

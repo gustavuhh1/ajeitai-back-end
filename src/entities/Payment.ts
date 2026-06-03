@@ -52,4 +52,18 @@ export class Payment {
         this.props.status = 'FALHOU'
         this.props.confirmed_payment = false
     }
+
+    toJSON() {
+        return {
+            id: this.id,
+            method: this.method,
+            amount: this.amount,
+            status: this.status,
+            transaction_id: this.transaction_id,
+            confirmed_payment: this.confirmed_payment,
+            budget_id: this.budget_id,
+            client_id: this.client_id,
+            createdAt: this.createdAt
+        };
+    }
 }

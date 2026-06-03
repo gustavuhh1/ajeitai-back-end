@@ -31,5 +31,14 @@ export class Message {
     get budgetId() { return this.props.budgetId }
     get createdAt() { return this.props.createdAt }
 
-
+    toJSON() {
+        return {
+            id: this.id,
+            text: this.text,
+            imageUrl: this.imageUrl,
+            senderId: this.senderId,
+            budgetId: this.budgetId,
+            createdAt: this.createdAt
+        };
+    }
 }

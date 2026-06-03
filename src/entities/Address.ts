@@ -122,4 +122,22 @@ export class Address {
   get user_id(): string {
     return this.props.user_id;
   }
+
+  toJSON() {
+    return {
+      id: this.id,
+      apelido: this.apelido,
+      rua: this.rua,
+      numero: this.numero,
+      cep: this.cep,
+      complemento: this.complemento,
+      cidade: this.cidade,
+      estado: this.estado,
+      bairro: this.bairro,
+      latitude: this.latitude,
+      longitude: this.longitude,
+      principal: this.principal,
+      user_id: this.user_id,
+    };
+  }
 }

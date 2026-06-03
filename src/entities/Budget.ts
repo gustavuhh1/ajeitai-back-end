@@ -80,4 +80,18 @@ export class Budget {
     this.props.status = "RECUSADO";
     this.props.updatedAt = new Date();
   }
+
+  toJSON() {
+    return {
+      id: this.id,
+      serviceId: this.serviceId,
+      providerId: this.providerId,
+      price: this.price,
+      description: this.description,
+      estimatedDate: this.estimatedDate,
+      status: this.status,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
+  }
 }

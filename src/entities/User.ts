@@ -76,4 +76,21 @@ export class User {
   set avgRating(value: Prisma.Decimal) {
     this.props.avgRating = value;
   }
+
+  toJSON() {
+    return {
+      id: this.id,
+      image: this.image,
+      name: this.name,
+      email: this.email,
+      password: this.password,
+      cpf: this.cpf,
+      phone: this.phone,
+      birthDate: this.birthDate,
+      description: this.description,
+      role: this.role,
+      avgRating: this.avgRating,
+      created_at: this.props.created_at,
+    };
+  }
 }

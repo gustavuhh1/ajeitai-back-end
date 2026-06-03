@@ -53,4 +53,17 @@ export class Notification {
   public markAsRead() {
     this.props.isRead = true;
   }
+
+  toJSON() {
+    return {
+      id: this.id,
+      userId: this.userId,
+      title: this.title,
+      message: this.message,
+      type: this.type,
+      isRead: this.isRead,
+      link: this.link,
+      createdAt: this.createdAt,
+    };
+  }
 }

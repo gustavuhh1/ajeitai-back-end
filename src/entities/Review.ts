@@ -33,4 +33,16 @@ export class Review {
     get reviewerId() { return this.props.reviewerId }
     get reviewedId() { return this.props.reviewedId }
     get createdAt() { return this.props.createdAt }
+
+    toJSON() {
+        return {
+            id: this.id,
+            rating: this.rating,
+            comment: this.comment,
+            serviceId: this.serviceId,
+            reviewerId: this.reviewerId,
+            reviewedId: this.reviewedId,
+            createdAt: this.createdAt
+        };
+    }
 }
